@@ -1,5 +1,5 @@
 /* =====================================================
-   BACKGROUND PIXEL HEARTS (SEAMLESS FLOW)
+   BACKGROUND PIXEL HEARTS (BOTTOM → TOP, ABSORBED)
    ===================================================== */
 
 const bgCanvas = document.getElementById("bgCanvas");
@@ -12,14 +12,14 @@ function resizeBG() {
 resizeBG();
 window.addEventListener("resize", resizeBG);
 
-const heartImg = new Image();
-heartImg.src = "shrut-heart.png";
+const pixelHeart = new Image();
+pixelHeart.src = "shrut-heart.png";
 
 const HEART_COUNT = 16;
 const bgHearts = [];
 
-/* Create heart OFF-SCREEN only */
-function createHeart(initial = false) {
+/* Create heart (always off-screen safe) */
+function createBgHeart(initial = false) {
   return {
     x: Math.random() * bgCanvas.width,
     y: initial
@@ -27,55 +27,78 @@ function createHeart(initial = false) {
       : bgCanvas.height + Math.random() * 200,
     size: 42 + Math.random() * 26,
     speed: 0.22 + Math.random() * 0.22,
-    opacity: 0.22 + Math.random() * 0.12
+    opacity: 0.22 + Math.random() * 0.12,
+    absorbing: false
   };
 }
 
-/* Initialize once */
-function initHearts() {
+/* Init hearts */
+function initBgHearts() {
   bgHearts.length = 0;
   for (let i = 0; i < HEART_COUNT; i++) {
-    bgHearts.push(createHeart(true));
+    bgHearts.push(createBgHeart(true));
   }
 }
 
-/* Seamless animation loop */
-function animateBG() {
+/* Main heart center (DOM-based, accurate) */
+function getMainHeartCenter() {
+  const main = document.getElementById("heartCanvas");
+  const rect = main.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
+}
+
+/* Animate background hearts */
+function animateBgHearts() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.imageSmoothingEnabled = false;
+
+  const target = getMainHeartCenter();
+  const absorbRadius = 120;
 
   for (let i = 0; i < bgHearts.length; i++) {
     const h = bgHearts[i];
 
+    // Move upward
     h.y -= h.speed;
 
-    bgCtx.globalAlpha = h.opacity;
-    bgCtx.drawImage(
-      heartImg,
-      h.x,
-      h.y,
-      h.size,
-      h.size
-    );
+    // Distance to main heart
+    const dx = h.x - target.x;
+    const dy = h.y - target.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-    /* Recycle ONLY after fully leaving screen */
-    if (h.y < -h.size - 50) {
-      h.y = bgCanvas.height + 200 + Math.random() * 200;
-      h.x = Math.random() * bgCanvas.width;
+    // Start absorption
+    if (dist < absorbRadius) {
+      h.absorbing = true;
+    }
+
+    if (h.absorbing) {
+      h.opacity -= 0.03;
+      h.size *= 0.96;
+    }
+
+    bgCtx.globalAlpha = Math.max(h.opacity, 0);
+    bgCtx.drawImage(pixelHeart, h.x, h.y, h.size, h.size);
+
+    // Recycle ONLY after fully invisible or fully off-screen
+    if (h.opacity <= 0 || h.y < -h.size - 80) {
+      bgHearts[i] = createBgHeart(false);
     }
   }
 
   bgCtx.globalAlpha = 1;
-  requestAnimationFrame(animateBG);
+  requestAnimationFrame(animateBgHearts);
 }
 
-heartImg.onload = () => {
-  initHearts();
-  animateBG();
+pixelHeart.onload = () => {
+  initBgHearts();
+  animateBgHearts();
 };
 
 /* =====================================================
-   MAIN HEART (UNCHANGED — DO NOT TOUCH)
+   MAIN HEART (UNCHANGED SELF-DRAWING HEART)
    ===================================================== */
 
 const canvas = document.getElementById("heartCanvas");
