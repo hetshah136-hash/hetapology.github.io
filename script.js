@@ -1,27 +1,86 @@
-/* ===== Canvas Setup ===== */
-const mainCanvas = document.getElementById("heartCanvas");
-const mainCtx = mainCanvas.getContext("2d");
+/* ===============================
+   BACKGROUND FLOATING PIXEL HEARTS
+   Requires: shrut-heart.png
+   =============================== */
 
 const bgCanvas = document.getElementById("bgCanvas");
 const bgCtx = bgCanvas.getContext("2d");
 
-bgCanvas.width = window.innerWidth;
-bgCanvas.height = window.innerHeight;
-
-window.addEventListener("resize", () => {
+function resizeBG() {
   bgCanvas.width = window.innerWidth;
   bgCanvas.height = window.innerHeight;
-});
+}
+resizeBG();
+window.addEventListener("resize", resizeBG);
 
-/* ===== DOM ===== */
+/* Load pixel heart */
+const heartImg = new Image();
+heartImg.src = "shrut-heart.png";
+
+/* Store hearts */
+const hearts = [];
+const MAX_HEARTS = 15;
+
+/* Create heart */
+function spawnHeart() {
+  if (hearts.length >= MAX_HEARTS) return;
+
+  hearts.push({
+    x: Math.random() * bgCanvas.width,
+    y: bgCanvas.height + 40,
+    size: 40 + Math.random() * 30,
+    speed: 0.3 + Math.random() * 0.4,
+    opacity: 0,
+    phase: "in"
+  });
+}
+
+/* Animate hearts */
+function animateHearts() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  bgCtx.imageSmoothingEnabled = false;
+
+  hearts.forEach((h, i) => {
+    if (h.phase === "in") {
+      h.opacity += 0.015;
+      if (h.opacity >= 0.28) h.phase = "out";
+    } else {
+      h.opacity -= 0.002;
+    }
+
+    h.y -= h.speed;
+
+    bgCtx.globalAlpha = h.opacity;
+    bgCtx.drawImage(heartImg, h.x, h.y, h.size, h.size);
+
+    if (h.opacity <= 0 || h.y < -100) {
+      hearts.splice(i, 1);
+    }
+  });
+
+  bgCtx.globalAlpha = 1;
+  requestAnimationFrame(animateHearts);
+}
+
+/* Start background hearts */
+heartImg.onload = () => {
+  spawnHeart();
+  setInterval(spawnHeart, 700);
+  animateHearts();
+};
+
+/* ===============================
+   MAIN HEART DRAW (CENTER)
+   =============================== */
+
+const canvas = document.getElementById("heartCanvas");
+const ctx = canvas.getContext("2d");
 const afterHeart = document.getElementById("afterHeart");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const answer = document.getElementById("answer");
-const buttons = document.getElementById("buttons");
 
-/* ===== Heart Math ===== */
-const color = "#c97a7a";
+const rose = "#c97a7a";
+ctx.strokeStyle = rose;
+ctx.lineWidth = 2.2;
+ctx.lineCap = "round";
 
 function heartPoint(t) {
   return {
@@ -34,31 +93,28 @@ function heartPoint(t) {
   };
 }
 
-/* ===== Main Heart ===== */
-let progress = 0;
-const duration = 520;
+let step = 0;
+const TOTAL = 520;
 
 function drawMainHeart() {
-  mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-  mainCtx.beginPath();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
 
-  for (let i = 0; i < progress; i++) {
-    const p = heartPoint((i / duration) * Math.PI * 2);
-    const x = mainCanvas.width / 2 + p.x * 8;
-    const y = mainCanvas.height / 2 - p.y * 8;
-    if (i === 0) mainCtx.moveTo(x, y);
-    else mainCtx.lineTo(x, y);
+  for (let i = 0; i < step; i++) {
+    const p = heartPoint((i / TOTAL) * Math.PI * 2);
+    const x = canvas.width / 2 + p.x * 8;
+    const y = canvas.height / 2 - p.y * 8;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
   }
 
-  mainCtx.strokeStyle = color;
-  mainCtx.lineWidth = 2.2;
-  mainCtx.shadowColor = color;
-  mainCtx.shadowBlur = 10;
-  mainCtx.stroke();
-  mainCtx.shadowBlur = 0;
+  ctx.shadowColor = rose;
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
 
-  if (progress < duration) {
-    progress++;
+  if (step < TOTAL) {
+    step++;
     requestAnimationFrame(drawMainHeart);
   } else {
     afterHeart.textContent = "I’m taking responsibility.";
@@ -67,53 +123,15 @@ function drawMainHeart() {
 
 drawMainHeart();
 
-/* ===== Background Hearts ===== */
-let bgHearts = [];
+/* ===============================
+   BUTTON INTERACTION
+   =============================== */
 
-function spawnBgHeart() {
-  bgHearts.push({
-    x: Math.random() * bgCanvas.width,
-    y: bgCanvas.height + 150,
-    size: 140 + Math.random() * 160,
-    speed: 0.4 + Math.random() * 0.3,
-    opacity: 0.12 + Math.random() * 0.06
-  });
-}
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const answer = document.getElementById("answer");
+const buttons = document.getElementById("buttons");
 
-function drawBgHeart(h) {
-  bgCtx.beginPath();
-  for (let i = 0; i < 100; i++) {
-    const p = heartPoint((i / 100) * Math.PI * 2);
-    const x = h.x + p.x * (h.size / 16);
-    const y = h.y - p.y * (h.size / 16);
-    if (i === 0) bgCtx.moveTo(x, y);
-    else bgCtx.lineTo(x, y);
-  }
-  bgCtx.stroke();
-}
-
-function animateBg() {
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  bgCtx.strokeStyle = color;
-  bgCtx.lineWidth = 1.4;
-
-  bgHearts.forEach((h, i) => {
-    bgCtx.globalAlpha = h.opacity;
-    drawBgHeart(h);
-    h.y -= h.speed;
-    if (h.y < -200) bgHearts.splice(i, 1);
-  });
-
-  bgCtx.globalAlpha = 1;
-  requestAnimationFrame(animateBg);
-}
-
-/* Start background hearts */
-spawnBgHeart();
-setInterval(spawnBgHeart, 8000);
-animateBg();
-
-/* ===== Interaction ===== */
 yesBtn.addEventListener("click", () => {
   buttons.style.display = "none";
   answer.textContent = "Thank you for trusting me.";
