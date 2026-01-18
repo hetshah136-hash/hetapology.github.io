@@ -1,273 +1,115 @@
-/* ==========================================================================
-   BASE & RESET
-   ========================================================================== */
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-
-/* ==========================================================================
-   TYPOGRAPHY & COLOR
-   Using Verdana as primary font - feels human, slightly imperfect, not sleek
-   Cream background (#faf8f5) is warmer than white
-   Dark gray text (#3d3d3d) is softer than black
-   ========================================================================== */
 
 body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 17px;
-    line-height: 1.75;
-    color: #3d3d3d;
-    background-color: #faf8f5;
-    overflow-x: hidden;
+  background: #faf7f3;
+  color: #2f2f2f;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* ==========================================================================
-   BACKGROUND OVERLAY
-   Invisible initially. After "Yes" click, adds subtle warm pink tint.
-   Very low opacity (0.025) - barely perceptible but emotionally warm.
-   ========================================================================== */
-
-.background-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 182, 193, 0);
-    pointer-events: none;
-    transition: background-color 2s ease;
-    z-index: 0;
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 72px 24px 96px;
 }
 
-.background-overlay.active {
-    background-color: rgba(255, 182, 193, 0.025);
+.quiet {
+  text-align: center;
+  font-size: 15px;
+  color: #666;
 }
 
-/* ==========================================================================
-   LAYOUT
-   Max-width 560px keeps line length comfortable for reading
-   Generous padding ensures content never touches edges
-   Z-index: 10 keeps content above background overlay
-   ========================================================================== */
-
-.container {
-    position: relative;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 50px 24px 70px;
-    z-index: 10;
+.quiet.top {
+  margin-bottom: 28px;
 }
 
-@media (max-width: 600px) {
-    .container {
-        padding: 35px 20px 55px;
-    }
+.quiet.bottom {
+  margin-top: 24px;
+  min-height: 22px;
 }
 
-/* ==========================================================================
-   SECTIONS
-   Large bottom margins create natural pauses between thoughts
-   Mimics the rhythm of a handwritten letter with breathing room
-   ========================================================================== */
-
-.letter-section,
-.apology-section,
-.reassurance-section,
-.quote-section {
-    margin-bottom: 55px;
+.heart-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 12px;
 }
 
-.question-section {
-    margin-top: 75px;
+canvas {
+  max-width: 100%;
+  height: auto;
 }
 
-/* ==========================================================================
-   PARAGRAPHS
-   Bottom margin separates thoughts without feeling cramped
-   Line-height 1.75 creates calm, comfortable reading pace
-   ========================================================================== */
-
-p {
-    margin-bottom: 22px;
-    font-size: 17px;
-    line-height: 1.75;
+.letter {
+  margin-top: 72px;
 }
 
-p:last-child {
-    margin-bottom: 0;
-}
-
-/* ==========================================================================
-   SECTION OPENERS
-   Slightly larger and darker to mark new thought sections
-   Not dramatically different - just enough to signal importance
-   ========================================================================== */
-
-.section-opener {
-    font-size: 18px;
-    font-weight: 600;
-    color: #2d2d2d;
-}
-
-/* ==========================================================================
-   QUOTE SECTION
-   Blockquote is indented and slightly smaller to feel respectful
-   Border-left creates visual separation without being loud
-   Gray text makes it feel like a quiet memory, not a dramatic callout
-   ========================================================================== */
-
-.quote-intro {
-    font-size: 17px;
-    margin-bottom: 18px;
+.letter p {
+  margin-bottom: 22px;
+  line-height: 1.85;
+  font-size: 17.5px;
 }
 
 .quote {
-    margin: 24px 0;
-    padding-left: 20px;
-    border-left: 3px solid #d4d4d4;
-    font-size: 16px;
-    line-height: 1.7;
-    color: #5a5a5a;
-    font-style: normal;
+  margin: 80px 0;
+  text-align: center;
+  color: #444;
 }
 
-.quote-follow {
-    font-size: 17px;
-    margin-top: 18px;
+.quote .intro {
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #666;
 }
 
-/* ==========================================================================
-   PAUSE
-   Large white space before tone shift to playful
-   Signals emotional reset - time to breathe before the question
-   ========================================================================== */
-
-.pause {
-    height: 100px;
+blockquote {
+  font-style: italic;
+  line-height: 1.8;
+  margin: 0 auto 14px;
+  max-width: 90%;
 }
 
-/* ==========================================================================
-   QUESTION SECTION
-   Center aligned to create focus
-   Slightly larger text makes question feel important but not aggressive
-   ========================================================================== */
-
-.question-section {
-    text-align: center;
+.quote .outro {
+  font-size: 14px;
+  color: #666;
 }
 
-.question {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 28px;
-    color: #2d2d2d;
+.ask {
+  margin-top: 88px;
+  text-align: center;
 }
 
-/* ==========================================================================
-   HINT TEXT
-   Smaller, lighter text for playful micro-commentary
-   Opacity transition creates gentle appearance
-   Min-height prevents layout shift when hint appears
-   ========================================================================== */
-
-.hint {
-    font-size: 14px;
-    color: #6a6a6a;
-    margin-bottom: 14px;
-    min-height: 20px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.ask h2 {
+  font-size: 22px;
+  font-weight: normal;
+  margin-bottom: 32px;
 }
 
-.hint.visible {
-    opacity: 1;
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
 }
 
-/* ==========================================================================
-   BUTTON CONTAINER
-   Relative positioning allows "No" button to move freely
-   Flexbox centers buttons with consistent gap
-   Min-height prevents layout jump when buttons disappear
-   ========================================================================== */
-
-.button-container {
-    position: relative;
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    align-items: center;
-    margin: 28px 0;
-    min-height: 50px;
+button {
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  background: #e7d7d7;
+  color: #2f2f2f;
+  transition: background 0.2s ease;
 }
 
-/* ==========================================================================
-   BUTTONS
-   Simple border style - not trying to be fancy
-   Rounded corners (6px) feel approachable, not corporate
-   Generous padding makes buttons easy to tap on mobile
-   Transitions are subtle (0.2s) - not flashy
-   ========================================================================== */
-
-.btn {
-    padding: 12px 28px;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    border: 2px solid #3d3d3d;
-    border-radius: 6px;
-    background-color: transparent;
-    color: #3d3d3d;
-    cursor: pointer;
-    transition: all 0.2s ease;
+button:hover {
+  background: #dcc5c5;
 }
 
-/* Yes button: Fills on hover to suggest stability and welcome */
-.btn-yes:hover {
-    background-color: #3d3d3d;
-    color: #faf8f5;
-}
-
-/* No button: Absolute positioning allows movement without affecting Yes */
-.btn-no {
-    position: absolute;
-    transition: all 0.35s ease-out;
-}
-
-@media (max-width: 600px) {
-    .btn {
-        padding: 11px 24px;
-        font-size: 15px;
-    }
-}
-
-/* ==========================================================================
-   RESPONSE TEXT
-   Larger size gives final message presence
-   Fade-in creates gentle reveal instead of harsh replacement
-   ========================================================================== */
-
-.response {
-    font-size: 19px;
-    font-weight: 600;
-    color: #2d2d2d;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.response.visible {
-    opacity: 1;
-}
-
-/* ==========================================================================
-   HIDDEN STATE
-   Visibility hidden maintains space during transitions
-   Prevents layout jump
-   ========================================================================== */
-
-.hidden {
-    visibility: hidden;
-    opacity: 0;
+.answer {
+  margin-top: 32px;
+  font-size: 16px;
+  min-height: 22px;
 }
