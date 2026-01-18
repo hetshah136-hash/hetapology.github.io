@@ -1,7 +1,7 @@
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -10,7 +10,7 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* Background hearts canvas */
+/* Background canvas */
 #bgCanvas {
   position: fixed;
   inset: 0;
@@ -20,14 +20,14 @@ body {
   pointer-events: none;
 }
 
-/* Page */
+/* Page layout */
 .page {
   max-width: 540px;
   margin: 0 auto;
   padding: 76px 22px 104px;
 }
 
-/* Text */
+/* Quiet lines */
 .quiet {
   text-align: center;
   font-size: 14.5px;
@@ -43,7 +43,7 @@ body {
   min-height: 22px;
 }
 
-/* Heart */
+/* Main heart */
 .heart-wrap {
   display: flex;
   justify-content: center;
@@ -62,8 +62,8 @@ body {
 
 .letter p {
   margin-bottom: 22px;
-  line-height: 1.9;
   font-size: 17px;
+  line-height: 1.9;
 }
 
 /* Quote */
@@ -82,9 +82,10 @@ blockquote {
   font-style: italic;
   margin: 16px auto;
   line-height: 1.8;
+  max-width: 92%;
 }
 
-/* Ask */
+/* Question */
 .ask {
   margin-top: 100px;
   text-align: center;
@@ -106,9 +107,16 @@ button {
   border-radius: 999px;
   border: none;
   background: #ead8d8;
+  color: #2c2c2c;
   cursor: pointer;
+  font-size: 14.8px;
+}
+
+button:hover {
+  background: #e1c4c4;
 }
 
 .answer {
   margin-top: 36px;
+  font-size: 15.5px;
 }
