@@ -1,6 +1,6 @@
-/* ===================== CANVAS SETUP ===================== */
-const canvas = document.getElementById("heartCanvas");
-const ctx = canvas.getContext("2d");
+/* ===== Canvas Setup ===== */
+const mainCanvas = document.getElementById("heartCanvas");
+const mainCtx = mainCanvas.getContext("2d");
 
 const bgCanvas = document.getElementById("bgCanvas");
 const bgCtx = bgCanvas.getContext("2d");
@@ -13,75 +13,70 @@ window.addEventListener("resize", () => {
   bgCanvas.height = window.innerHeight;
 });
 
-/* ===================== DOM ===================== */
+/* ===== DOM ===== */
 const afterHeart = document.getElementById("afterHeart");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const answer = document.getElementById("answer");
 const buttons = document.getElementById("buttons");
 
-/* ===================== HEART MATH ===================== */
+/* ===== Heart Math ===== */
 const color = "#c97a7a";
 
-ctx.strokeStyle = color;
-ctx.lineWidth = 2.2;
-ctx.lineCap = "round";
-ctx.lineJoin = "round";
-
 function heartPoint(t) {
-  const x = 16 * Math.pow(Math.sin(t), 3);
-  const y =
-    13 * Math.cos(t) -
-    5 * Math.cos(2 * t) -
-    2 * Math.cos(3 * t) -
-    Math.cos(4 * t);
-  return { x, y };
+  return {
+    x: 16 * Math.pow(Math.sin(t), 3),
+    y:
+      13 * Math.cos(t) -
+      5 * Math.cos(2 * t) -
+      2 * Math.cos(3 * t) -
+      Math.cos(4 * t)
+  };
 }
 
-/* ===================== MAIN HEART ===================== */
+/* ===== Main Heart ===== */
 let progress = 0;
-const duration = 560;
-let finished = false;
+const duration = 520;
 
 function drawMainHeart() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
+  mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+  mainCtx.beginPath();
 
   for (let i = 0; i < progress; i++) {
     const p = heartPoint((i / duration) * Math.PI * 2);
-    const cx = canvas.width / 2 + p.x * 8;
-    const cy = canvas.height / 2 - p.y * 8;
-    if (i === 0) ctx.moveTo(cx, cy);
-    else ctx.lineTo(cx, cy);
+    const x = mainCanvas.width / 2 + p.x * 8;
+    const y = mainCanvas.height / 2 - p.y * 8;
+    if (i === 0) mainCtx.moveTo(x, y);
+    else mainCtx.lineTo(x, y);
   }
 
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 10;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
+  mainCtx.strokeStyle = color;
+  mainCtx.lineWidth = 2.2;
+  mainCtx.shadowColor = color;
+  mainCtx.shadowBlur = 10;
+  mainCtx.stroke();
+  mainCtx.shadowBlur = 0;
 
   if (progress < duration) {
     progress++;
     requestAnimationFrame(drawMainHeart);
-  } else if (!finished) {
-    finished = true;
+  } else {
     afterHeart.textContent = "I’m taking responsibility.";
-    startBackgroundHearts();
   }
 }
 
 drawMainHeart();
 
-/* ===================== BACKGROUND HEARTS ===================== */
+/* ===== Background Hearts ===== */
 let bgHearts = [];
 
 function spawnBgHeart() {
   bgHearts.push({
     x: Math.random() * bgCanvas.width,
-    y: bgCanvas.height + 120,
-    size: 120 + Math.random() * 140,
-    speed: 0.15 + Math.random() * 0.2,
-    opacity: 0.035 + Math.random() * 0.02
+    y: bgCanvas.height + 150,
+    size: 140 + Math.random() * 160,
+    speed: 0.4 + Math.random() * 0.3,
+    opacity: 0.12 + Math.random() * 0.06
   });
 }
 
@@ -89,18 +84,18 @@ function drawBgHeart(h) {
   bgCtx.beginPath();
   for (let i = 0; i < 100; i++) {
     const p = heartPoint((i / 100) * Math.PI * 2);
-    const cx = h.x + p.x * (h.size / 16);
-    const cy = h.y - p.y * (h.size / 16);
-    if (i === 0) bgCtx.moveTo(cx, cy);
-    else bgCtx.lineTo(cx, cy);
+    const x = h.x + p.x * (h.size / 16);
+    const y = h.y - p.y * (h.size / 16);
+    if (i === 0) bgCtx.moveTo(x, y);
+    else bgCtx.lineTo(x, y);
   }
   bgCtx.stroke();
 }
 
-function animateBackground() {
+function animateBg() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.strokeStyle = color;
-  bgCtx.lineWidth = 1.2;
+  bgCtx.lineWidth = 1.4;
 
   bgHearts.forEach((h, i) => {
     bgCtx.globalAlpha = h.opacity;
@@ -110,19 +105,15 @@ function animateBackground() {
   });
 
   bgCtx.globalAlpha = 1;
-  requestAnimationFrame(animateBackground);
+  requestAnimationFrame(animateBg);
 }
 
-function startBackgroundHearts() {
-  spawnBgHeart();
-  animateBackground();
+/* Start background hearts */
+spawnBgHeart();
+setInterval(spawnBgHeart, 8000);
+animateBg();
 
-  setInterval(() => {
-    if (bgHearts.length < 2) spawnBgHeart();
-  }, 16000);
-}
-
-/* ===================== INTERACTION ===================== */
+/* ===== Interaction ===== */
 yesBtn.addEventListener("click", () => {
   buttons.style.display = "none";
   answer.textContent = "Thank you for trusting me.";
