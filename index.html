@@ -1,98 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For You</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <!-- Subtle background overlay (activated after "Yes" click) -->
-    <div class="background-overlay" id="bgOverlay"></div>
 
-    <main class="container">
-        <!-- Love Letter -->
-        <section class="letter-section">
-            <p>
-                I've been thinking about you a lot lately. Not in a way that feels heavy, 
-                just in the way you think about someone when they matter.
-            </p>
-            <p>
-                I like the way you are with people. How you listen, even when you're tired. 
-                How you notice things. The way you care about getting things right.
-            </p>
-            <p>
-                I don't always say it clearly, but you make things feel less complicated. 
-                Like I can just be myself and that's enough.
-            </p>
-            <p>
-                I'm glad you're in my life.
-            </p>
-        </section>
+  <main class="page">
 
-        <!-- Apology -->
-        <section class="apology-section">
-            <p class="section-opener">
-                I need to apologize.
-            </p>
-            <p>
-                I was careless with my words. I said things without thinking about how they'd land, 
-                and I can see now that it hurt you. That's on me.
-            </p>
-            <p>
-                I wasn't paying attention the way I should have been. You deserved better than that. 
-                I'm sorry.
-            </p>
-            <p>
-                I can't take it back, but I can do better going forward. And I will.
-            </p>
-        </section>
+    <p class="quiet top">
+      I wanted to show this, not just say it.
+    </p>
 
-        <!-- Reassurance -->
-        <section class="reassurance-section">
-            <p>
-                You don't have to respond to this. You don't owe me anything. 
-                Not forgiveness, not a reply, not your time.
-            </p>
-            <p>
-                I just wanted you to know that I see what I did, and I'm taking responsibility for it. 
-                Not because I expect something back, but because it's the right thing to do.
-            </p>
-            <p>
-                Whatever you need right now, I hope you give that to yourself.
-            </p>
-        </section>
+    <div class="heart-wrap">
+      <canvas id="heartCanvas" width="420" height="380" aria-hidden="true"></canvas>
+    </div>
 
-        <!-- Quote Section -->
-        <section class="quote-section">
-            <p class="quote-intro">
-                You once said this to me, and it stayed with me.
-            </p>
-            <blockquote class="quote">
-                "As long as you are willing to be better and you try to be accountable, 
-                there is no way — I repeat, no way in hell — 
-                I'll ever think about leaving you, okay."
-            </blockquote>
-            <p class="quote-follow">
-                I'm still holding myself to that.
-            </p>
-        </section>
+    <p class="quiet bottom" id="afterHeart" aria-live="polite"></p>
 
-        <!-- Pause -->
-        <div class="pause"></div>
+    <section class="letter">
+      <p>
+        I’m writing this slowly because when I rush, I mess things up.
+      </p>
+      <p>
+        I understand now why what I said hurt. Even if that wasn’t my intent,
+        the impact matters more. I didn’t pause. I didn’t think it through.
+      </p>
+      <p>
+        That’s on me.
+      </p>
+      <p>
+        I can’t take it back, but I’m paying more attention now.
+        And I’ll keep doing that.
+      </p>
+    </section>
 
-        <!-- Playful Ending -->
-        <section class="question-section">
-            <p class="question">Do you love me?</p>
-            <p class="hint" id="hint"></p>
-            <div class="button-container" id="buttonContainer">
-                <button class="btn btn-yes" id="yesBtn">Yes</button>
-                <button class="btn btn-no" id="noBtn">No</button>
-            </div>
-            <p class="response" id="response"></p>
-        </section>
-    </main>
+    <section class="quote">
+      <p class="intro">You once said this to me, and it stayed with me.</p>
+      <blockquote>
+        “As long as you are willing to be better and you try to be accountable,
+        there is no way — I repeat, no way in hell —
+        I’ll ever think about leaving you, okay.”
+      </blockquote>
+      <p class="outro">I’m still holding myself to that.</p>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="ask">
+      <h2>Do you still feel safe with me?</h2>
+      <div class="buttons" id="buttons">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">Not yet</button>
+      </div>
+      <p class="answer" id="answer"></p>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
