@@ -10,7 +10,7 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* Background canvas */
+/* BACKGROUND HEARTS */
 #bgCanvas {
   position: fixed;
   inset: 0;
@@ -20,14 +20,13 @@ body {
   pointer-events: none;
 }
 
-/* Page layout */
+/* CONTENT */
 .page {
   max-width: 540px;
   margin: 0 auto;
   padding: 76px 22px 104px;
 }
 
-/* Quiet lines */
 .quiet {
   text-align: center;
   font-size: 14.5px;
@@ -43,7 +42,7 @@ body {
   min-height: 22px;
 }
 
-/* Main heart */
+/* MAIN HEART */
 .heart-wrap {
   display: flex;
   justify-content: center;
@@ -55,7 +54,7 @@ body {
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.06));
 }
 
-/* Letter */
+/* LETTER */
 .letter {
   margin-top: 80px;
 }
@@ -66,7 +65,7 @@ body {
   line-height: 1.9;
 }
 
-/* Quote */
+/* QUOTE */
 .quote {
   margin: 90px 0;
   text-align: center;
@@ -85,7 +84,7 @@ blockquote {
   max-width: 92%;
 }
 
-/* Question */
+/* QUESTION */
 .ask {
   margin-top: 100px;
   text-align: center;
@@ -107,9 +106,7 @@ button {
   border-radius: 999px;
   border: none;
   background: #ead8d8;
-  color: #2c2c2c;
   cursor: pointer;
-  font-size: 14.8px;
 }
 
 button:hover {
