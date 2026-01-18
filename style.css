@@ -6,14 +6,27 @@
 
 /* ===== Base ===== */
 body {
-  background: #fbf8f4; /* warmer than before */
+  background: #fbf8f4;
   color: #2c2c2c;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/* ===== Background canvas ===== */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===== Page ===== */
 .page {
+  position: relative;
+  z-index: 1;
   max-width: 540px;
   margin: 0 auto;
   padding: 76px 22px 104px;
@@ -41,10 +54,9 @@ body {
   display: flex;
   justify-content: center;
   margin: 18px 0 10px;
-  position: relative;
 }
 
-canvas {
+#heartCanvas {
   max-width: 100%;
   height: auto;
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.06));
@@ -81,7 +93,6 @@ blockquote {
   line-height: 1.85;
   margin: 0 auto 18px;
   max-width: 92%;
-  color: #3a3a3a;
 }
 
 .quote .outro {
@@ -89,7 +100,7 @@ blockquote {
   color: #777;
 }
 
-/* ===== Ask section ===== */
+/* ===== Ask ===== */
 .ask {
   margin-top: 104px;
   text-align: center;
@@ -137,23 +148,12 @@ button:active {
   color: #444;
 }
 
-/* ===== Mobile tuning ===== */
+/* ===== Mobile ===== */
 @media (max-width: 480px) {
   .page {
     padding: 64px 18px 92px;
   }
-
   .letter p {
     font-size: 16.8px;
   }
-}
-#bgCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 1;
 }
