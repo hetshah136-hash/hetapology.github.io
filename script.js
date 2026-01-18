@@ -1,85 +1,61 @@
-// =============================================================================
-// STATE TRACKING
-// =============================================================================
+const canvas = document.getElementById("heartCanvas");
+const ctx = canvas.getContext("2d");
 
-let hoverCount = 0;
-let hintShown = false;
+const afterHeart = document.getElementById("afterHeart");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const answer = document.getElementById("answer");
+const buttons = document.getElementById("buttons");
 
-// =============================================================================
-// DOM ELEMENTS
-// =============================================================================
+const color = "#c97a7a";
+ctx.strokeStyle = color;
+ctx.lineWidth = 2.2;
+ctx.lineCap = "round";
+ctx.lineJoin = "round";
 
-const noBtn = document.getElementById('noBtn');
-const yesBtn = document.getElementById('yesBtn');
-const hint = document.getElementById('hint');
-const response = document.getElementById('response');
-const buttonContainer = document.getElementById('buttonContainer');
-const bgOverlay = document.getElementById('bgOverlay');
+let t = 0;
+const duration = 540; // ~9 seconds at 60fps
 
-// =============================================================================
-// BUTTON MOVEMENT
-// Generates random position within safe bounds (40-75px from center)
-// Movement is gentle and limited - not chaotic
-// =============================================================================
-
-function getRandomPosition() {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 40 + Math.random() * 35; // Between 40-75px
-
-    return {
-        x: Math.cos(angle) * distance,
-        y: Math.sin(angle) * distance
-    };
+function heartPoint(t) {
+  const x = 16 * Math.pow(Math.sin(t), 3);
+  const y =
+    13 * Math.cos(t) -
+    5 * Math.cos(2 * t) -
+    2 * Math.cos(3 * t) -
+    Math.cos(4 * t);
+  return { x, y };
 }
 
-// =============================================================================
-// "NO" BUTTON INTERACTION
-// Moves away gently on hover
-// Shows hint text only once after first hover
-// =============================================================================
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
 
-noBtn.addEventListener('mouseenter', () => {
-    const pos = getRandomPosition();
-    noBtn.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+  for (let i = 0; i < t; i++) {
+    const p = heartPoint((i / duration) * Math.PI * 2);
+    const cx = canvas.width / 2 + p.x * 8;
+    const cy = canvas.height / 2 - p.y * 8;
+    if (i === 0) ctx.moveTo(cx, cy);
+    else ctx.lineTo(cx, cy);
+  }
 
-    // Show hint only once
-    if (!hintShown) {
-        hoverCount++;
-        if (hoverCount === 1) {
-            hint.textContent = 'Okay okay 😅';
-            hint.classList.add('visible');
-            hintShown = true;
-        }
-    }
+  ctx.stroke();
+
+  if (t < duration) {
+    t++;
+    requestAnimationFrame(draw);
+  } else {
+    afterHeart.textContent = "I’m taking responsibility.";
+  }
+}
+
+draw();
+
+yesBtn.addEventListener("click", () => {
+  buttons.style.display = "none";
+  answer.textContent = "Thank you for trusting me.";
 });
 
-// Reset "No" button position after mouse leaves
-// Creates softer interaction - button drifts back to center
-noBtn.addEventListener('mouseleave', () => {
-    setTimeout(() => {
-        noBtn.style.transform = 'translate(0, 0)';
-    }, 1000);
-});
-
-// =============================================================================
-// "YES" BUTTON INTERACTION
-// Shows response text and activates subtle background tint
-// No additional effects - keeping it simple and warm
-// =============================================================================
-
-yesBtn.addEventListener('click', () => {
-    // Hide buttons and hint
-    buttonContainer.classList.add('hidden');
-    hint.classList.remove('visible');
-
-    // Show response text after brief delay
-    setTimeout(() => {
-        response.textContent = 'Okay. That made me smile.';
-        response.classList.add('visible');
-
-        // Add subtle warm pink tint to background
-        setTimeout(() => {
-            bgOverlay.classList.add('active');
-        }, 600);
-    }, 300);
+noBtn.addEventListener("click", () => {
+  buttons.style.display = "none";
+  answer.textContent = "I understand. I’m still here.";
 });
