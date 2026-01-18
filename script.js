@@ -1,7 +1,6 @@
-/* ===============================
-   BACKGROUND FLOATING PIXEL HEARTS
-   Requires: shrut-heart.png
-   =============================== */
+/* =====================================================
+   BACKGROUND PIXEL HEARTS (SMOOTH LOOP)
+   ===================================================== */
 
 const bgCanvas = document.getElementById("bgCanvas");
 const bgCtx = bgCanvas.getContext("2d");
@@ -13,65 +12,60 @@ function resizeBG() {
 resizeBG();
 window.addEventListener("resize", resizeBG);
 
-/* Load pixel heart */
 const heartImg = new Image();
 heartImg.src = "shrut-heart.png";
 
-/* Store hearts */
-const hearts = [];
-const MAX_HEARTS = 15;
+const HEART_COUNT = 14;
+const bgHearts = [];
 
-/* Create heart */
-function spawnHeart() {
-  if (hearts.length >= MAX_HEARTS) return;
-
-  hearts.push({
-    x: Math.random() * bgCanvas.width,
-    y: bgCanvas.height + 40,
-    size: 40 + Math.random() * 30,
-    speed: 0.3 + Math.random() * 0.4,
-    opacity: 0,
-    phase: "in"
-  });
+function initHearts() {
+  bgHearts.length = 0;
+  for (let i = 0; i < HEART_COUNT; i++) {
+    bgHearts.push(createHeart(true));
+  }
 }
 
-/* Animate hearts */
-function animateHearts() {
+function createHeart(randomY = false) {
+  return {
+    x: Math.random() * bgCanvas.width,
+    y: randomY
+      ? Math.random() * bgCanvas.height
+      : bgCanvas.height + Math.random() * 100,
+    size: 40 + Math.random() * 25,
+    speed: 0.25 + Math.random() * 0.25,
+    opacity: 0.18 + Math.random() * 0.12
+  };
+}
+
+function animateBGHearts() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.imageSmoothingEnabled = false;
 
-  hearts.forEach((h, i) => {
-    if (h.phase === "in") {
-      h.opacity += 0.015;
-      if (h.opacity >= 0.28) h.phase = "out";
-    } else {
-      h.opacity -= 0.002;
-    }
-
+  bgHearts.forEach(h => {
     h.y -= h.speed;
 
     bgCtx.globalAlpha = h.opacity;
     bgCtx.drawImage(heartImg, h.x, h.y, h.size, h.size);
 
-    if (h.opacity <= 0 || h.y < -100) {
-      hearts.splice(i, 1);
+    /* Loop smoothly back to bottom */
+    if (h.y < -h.size) {
+      h.y = bgCanvas.height + Math.random() * 80;
+      h.x = Math.random() * bgCanvas.width;
     }
   });
 
   bgCtx.globalAlpha = 1;
-  requestAnimationFrame(animateHearts);
+  requestAnimationFrame(animateBGHearts);
 }
 
-/* Start background hearts */
 heartImg.onload = () => {
-  spawnHeart();
-  setInterval(spawnHeart, 700);
-  animateHearts();
+  initHearts();
+  animateBGHearts();
 };
 
-/* ===============================
-   MAIN HEART DRAW (CENTER)
-   =============================== */
+/* =====================================================
+   MAIN HEART (DO NOT EDIT LOGIC)
+   ===================================================== */
 
 const canvas = document.getElementById("heartCanvas");
 const ctx = canvas.getContext("2d");
@@ -123,9 +117,9 @@ function drawMainHeart() {
 
 drawMainHeart();
 
-/* ===============================
-   BUTTON INTERACTION
-   =============================== */
+/* =====================================================
+   BUTTONS
+   ===================================================== */
 
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
