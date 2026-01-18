@@ -1,5 +1,5 @@
 /* =====================================================
-   BACKGROUND PIXEL HEARTS (SMOOTH LOOP)
+   BACKGROUND PIXEL HEARTS (SEAMLESS FLOW)
    ===================================================== */
 
 const bgCanvas = document.getElementById("bgCanvas");
@@ -15,9 +15,23 @@ window.addEventListener("resize", resizeBG);
 const heartImg = new Image();
 heartImg.src = "shrut-heart.png";
 
-const HEART_COUNT = 14;
+const HEART_COUNT = 16;
 const bgHearts = [];
 
+/* Create heart OFF-SCREEN only */
+function createHeart(initial = false) {
+  return {
+    x: Math.random() * bgCanvas.width,
+    y: initial
+      ? Math.random() * bgCanvas.height
+      : bgCanvas.height + Math.random() * 200,
+    size: 42 + Math.random() * 26,
+    speed: 0.22 + Math.random() * 0.22,
+    opacity: 0.22 + Math.random() * 0.12
+  };
+}
+
+/* Initialize once */
 function initHearts() {
   bgHearts.length = 0;
   for (let i = 0; i < HEART_COUNT; i++) {
@@ -25,46 +39,43 @@ function initHearts() {
   }
 }
 
-function createHeart(randomY = false) {
-  return {
-    x: Math.random() * bgCanvas.width,
-    y: randomY
-      ? Math.random() * bgCanvas.height
-      : bgCanvas.height + Math.random() * 100,
-    size: 40 + Math.random() * 25,
-    speed: 0.25 + Math.random() * 0.25,
-    opacity: 0.18 + Math.random() * 0.12
-  };
-}
-
-function animateBGHearts() {
+/* Seamless animation loop */
+function animateBG() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.imageSmoothingEnabled = false;
 
-  bgHearts.forEach(h => {
+  for (let i = 0; i < bgHearts.length; i++) {
+    const h = bgHearts[i];
+
     h.y -= h.speed;
 
     bgCtx.globalAlpha = h.opacity;
-    bgCtx.drawImage(heartImg, h.x, h.y, h.size, h.size);
+    bgCtx.drawImage(
+      heartImg,
+      h.x,
+      h.y,
+      h.size,
+      h.size
+    );
 
-    /* Loop smoothly back to bottom */
-    if (h.y < -h.size) {
-      h.y = bgCanvas.height + Math.random() * 80;
+    /* Recycle ONLY after fully leaving screen */
+    if (h.y < -h.size - 50) {
+      h.y = bgCanvas.height + 200 + Math.random() * 200;
       h.x = Math.random() * bgCanvas.width;
     }
-  });
+  }
 
   bgCtx.globalAlpha = 1;
-  requestAnimationFrame(animateBGHearts);
+  requestAnimationFrame(animateBG);
 }
 
 heartImg.onload = () => {
   initHearts();
-  animateBGHearts();
+  animateBG();
 };
 
 /* =====================================================
-   MAIN HEART (DO NOT EDIT LOGIC)
+   MAIN HEART (UNCHANGED — DO NOT TOUCH)
    ===================================================== */
 
 const canvas = document.getElementById("heartCanvas");
