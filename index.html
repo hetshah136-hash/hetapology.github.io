@@ -1,87 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>For You</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Subtle pink warmth (activated after Yes) -->
-  <div class="background-overlay" id="bgOverlay"></div>
+    <!-- Subtle background overlay (activated after "Yes" click) -->
+    <div class="background-overlay" id="bgOverlay"></div>
 
-  <!-- Pixel hearts (appear only after Yes) -->
-  <div class="hearts-container" id="heartsContainer"></div>
+    <main class="container">
+        <!-- Love Letter -->
+        <section class="letter-section">
+            <p>
+                I've been thinking about you a lot lately. Not in a way that feels heavy, 
+                just in the way you think about someone when they matter.
+            </p>
+            <p>
+                I like the way you are with people. How you listen, even when you're tired. 
+                How you notice things. The way you care about getting things right.
+            </p>
+            <p>
+                I don't always say it clearly, but you make things feel less complicated. 
+                Like I can just be myself and that's enough.
+            </p>
+            <p>
+                I'm glad you're in my life.
+            </p>
+        </section>
 
-  <main class="container">
+        <!-- Apology -->
+        <section class="apology-section">
+            <p class="section-opener">
+                I need to apologize.
+            </p>
+            <p>
+                I was careless with my words. I said things without thinking about how they'd land, 
+                and I can see now that it hurt you. That's on me.
+            </p>
+            <p>
+                I wasn't paying attention the way I should have been. You deserved better than that. 
+                I'm sorry.
+            </p>
+            <p>
+                I can't take it back, but I can do better going forward. And I will.
+            </p>
+        </section>
 
-    <!-- Love letter -->
-    <section class="letter-section">
-      <p class="opening">
-        I wanted to write this because when I talk, I sometimes mess things up.
-        Writing helps me slow down.
-      </p>
-
-      <p>
-        I care about you. In a real way.
-        I notice how deeply you feel things, and I know that’s part of who you are.
-        I don’t take that lightly.
-      </p>
-    </section>
-
-    <!-- Apology -->
-    <section class="apology-section">
-      <p class="section-opener">I’m sorry.</p>
-
-      <p>
-        I’ve been thinking about what I said, and I understand why it hurt.
-        The way it came out made it sound like I value a girlfriend less,
-        and only take a wife seriously.
-      </p>
-
-      <p>
-        That isn’t what I believe.
-        But I was careless. I didn’t think through my words,
-        and I didn’t stop to consider how they would land on you.
-      </p>
-
-      <p>
-        That’s on me.
-      </p>
-    </section>
-
-    <!-- Reassurance -->
-    <section class="reassurance-section">
-      <p>
-        I wasn’t trying to make you feel small or undervalued.
-        I was stupid with my wording, not careless with you.
-      </p>
-
-      <p>
-        You don’t need to reply to this.
-        There’s nothing you need to explain or fix.
-        I just wanted you to know I understand what I did wrong.
-      </p>
-    </section>
-
-    <!-- Pause -->
-    <div class="pause"></div>
-
-    <!-- Question -->
-    <section class="question-section">
-      <h2>Do you love me?</h2>
-
-      <div class="button-container" id="buttonContainer">
-        <button id="yesBtn" class="yes">Yes</button>
-        <button id="noBtn" class="no">No</button>
-      </div>
-
-      <p class="hint" id="hint"></p>
-      <p class="response" id="response"></p>
-    </section>
-
-  </main>
-
-  <script src="script.js"></script>
-</body>
-</html>
+        <!-- Reassurance -->
+        <section class="reassurance-section">
+            <p>
+                You don't have to respond to this. You don't owe me anything. 
+                Not forg
