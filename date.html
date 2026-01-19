@@ -8,13 +8,12 @@
 <!--
 ====================================================
 ROMANTIC DATE GALLERY – SINGLE FILE APP
+UPDATED ADD DATE MODAL + CLOUDINARY CONFIG
 ====================================================
 
-Cloudinary Credentials (ACTIVE):
+Cloudinary Credentials:
 - Cloud Name: dzfarzaew
 - Upload Preset: date_gallery
-
-Password: hetandshruti
 
 Requires:
 - shrut-heart.png in same folder
@@ -31,11 +30,16 @@ Requires:
   --card: #FDFCFB;
   --border: #E8E3DD;
   --muted: #B8ADA3;
+  --danger: #C94A4A;
   --shadow: 0 10px 40px rgba(0,0,0,0.15);
   --input-shadow: 0 0 0 3px rgba(255,181,197,0.2);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -45,7 +49,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ================= FLOATING HEARTS ================= */
+/* ================= FLOATING HEARTS (DOUBLED SIZE) ================= */
 .hearts {
   position: fixed;
   inset: 0;
@@ -55,7 +59,7 @@ body {
 
 .heart {
   position: absolute;
-  width: 36px;
+  width: 36px; /* DOUBLED from 18px */
   opacity: 0.3;
   animation: floatUp linear infinite;
 }
@@ -82,7 +86,17 @@ body {
   width: 340px;
 }
 
-.login-box img { width: 60px; margin-bottom: 16px; }
+.login-box img {
+  width: 60px;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+.login-box h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
 
 .login-box input {
   width: 100%;
@@ -91,6 +105,8 @@ body {
   border-radius: 12px;
   border: 2px solid var(--border);
   margin-top: 20px;
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
 
 .login-box input:focus {
@@ -108,7 +124,14 @@ body {
   border-radius: 25px;
   color: #fff;
   font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-box button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
 }
 
 /* ================= MAIN APP ================= */
@@ -126,11 +149,14 @@ header {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
 }
 
-header h1 { font-size: 28px; }
+header h1 {
+  font-size: 28px;
+  color: var(--text);
+}
 
 header button {
   height: 48px;
@@ -141,6 +167,14 @@ header button {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+header button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,181,197,0.3);
 }
 
 /* ================= TIMELINE ================= */
@@ -157,6 +191,7 @@ header button {
   bottom: 0;
   width: 3px;
   background: linear-gradient(to bottom, var(--accent), rgba(255,181,197,0.3));
+  border-radius: 3px;
 }
 
 .timeline-item {
@@ -164,20 +199,44 @@ header button {
   padding: 20px;
   margin-bottom: 24px;
   border-radius: 16px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   cursor: pointer;
+  position: relative;
   transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.timeline-item::before {
+  content: '💕';
+  position: absolute;
+  left: -52px;
+  top: 20px;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .timeline-item:hover {
-  transform: translateX(6px);
-  box-shadow: 0 10px 28px rgba(255,181,197,0.3);
+  transform: translateX(8px);
+  box-shadow: 0 8px 24px rgba(255,181,197,0.25);
+  border-color: var(--accent);
 }
 
-.timeline-item h3 { font-size: 18px; margin-bottom: 6px; }
-.timeline-item small { opacity: 0.7; }
+.timeline-item h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
 
-/* ================= MODAL ================= */
+.timeline-item small {
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+/* ================= MODAL BACKDROP ================= */
 .modal {
   position: fixed;
   inset: 0;
@@ -186,51 +245,102 @@ header button {
   align-items: center;
   justify-content: center;
   z-index: 100;
+  backdrop-filter: blur(4px);
 }
 
+/* ================= ADD DATE MODAL (ENHANCED) ================= */
 .modal-content {
   background: var(--card);
   width: 90%;
   max-width: 550px;
   padding: 40px;
   border-radius: 24px;
-  box-shadow: var(--shadow);
-  animation: modalIn 0.3s ease forwards;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { 
+    opacity: 0; 
+    transform: scale(0.9) translateY(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
 }
 
-/* ================= FORM ================= */
+.modal-content h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-content h2::before {
+  content: '💕';
+  font-size: 24px;
+}
+
+/* ================= FORM LABELS & INPUTS ================= */
 label {
+  display: block;
   font-size: 13px;
   font-weight: 600;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  display: block;
   margin-bottom: 8px;
+  color: var(--text);
 }
 
-input, textarea {
+input[type="date"],
+input[type="text"],
+textarea {
   width: 100%;
+  font-family: Verdana, sans-serif;
+  font-size: 15px;
   border: 2px solid var(--border);
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 20px;
+  transition: all 0.2s ease;
+  background: #FAFAF8;
 }
 
-input:focus, textarea:focus {
+input[type="date"] {
+  height: 50px;
+}
+
+input[type="text"] {
+  height: 50px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+input:focus,
+textarea:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: var(--input-shadow);
+  background: #fff;
 }
 
-textarea { min-height: 100px; resize: vertical; }
+textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
 
-/* ================= UPLOAD ================= */
+/* ================= UPLOAD ZONE (ENHANCED) ================= */
 .upload-zone {
   height: 160px;
   border: 2px dashed #D4CEC7;
@@ -240,33 +350,73 @@ textarea { min-height: 100px; resize: vertical; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
   margin-bottom: 20px;
+  position: relative;
+}
+
+.upload-zone:hover {
+  background: var(--bg);
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .upload-zone.dragover {
   border-color: var(--accent);
+  background: rgba(255,181,197,0.1);
+  border-style: solid;
 }
 
+.upload-zone .icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.upload-zone p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.upload-zone span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ================= IMAGE PREVIEW ================= */
 .preview {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.preview-item {
+  position: relative;
 }
 
 .preview img {
-  width: 80px;
+  width: 100%;
   height: 80px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  transition: transform 0.2s ease;
 }
 
-/* ================= ACTIONS ================= */
+.preview img:hover {
+  transform: scale(1.05);
+}
+
+/* ================= ACTION BUTTONS ================= */
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  margin-top: 30px;
 }
 
 .actions button {
@@ -274,17 +424,108 @@ textarea { min-height: 100px; resize: vertical; }
   padding: 0 32px;
   border-radius: 25px;
   border: none;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: Verdana, sans-serif;
 }
 
-.save { background: var(--accent); color: #fff; }
-.cancel { background: #F0EBE6; }
+.save {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255,181,197,0.3);
+}
 
-/* ================= MOBILE ================= */
-@media (max-width:600px){
-  .actions { flex-direction: column; }
-  .actions button { width: 100%; }
+.save:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255,181,197,0.4);
+}
+
+.save:active {
+  transform: translateY(0);
+}
+
+.cancel {
+  background: #F0EBE6;
+  color: var(--text);
+}
+
+.cancel:hover {
+  background: #E5DED7;
+  transform: translateY(-2px);
+}
+
+.cancel:active {
+  transform: translateY(0);
+}
+
+/* ================= LOADING INDICATOR ================= */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  color: var(--accent);
+}
+
+.loading.active {
+  display: block;
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    padding: 24px;
+  }
+
+  .modal-content h2 {
+    font-size: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  .timeline {
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    left: 10px;
+  }
+
+  .timeline-item::before {
+    left: -42px;
+  }
+}
+
+/* ================= SCROLLBAR STYLING ================= */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
 }
 </style>
 </head>
@@ -296,7 +537,7 @@ textarea { min-height: 100px; resize: vertical; }
 <!-- LOGIN -->
 <div id="login">
   <div class="login-box">
-    <img src="shrut-heart.png" alt="">
+    <img src="shrut-heart.png" alt="heart">
     <h3>Our Special Place</h3>
     <input type="password" id="password" placeholder="Enter password">
     <button onclick="login()">Enter 💕</button>
@@ -318,141 +559,228 @@ textarea { min-height: 100px; resize: vertical; }
     <h2>Add Date</h2>
 
     <label>Date</label>
-    <input type="date" id="dateInput">
+    <input type="date" id="dateInput" required>
 
-    <label>Title</label>
-    <input type="text" id="titleInput">
+    <label>Title (Optional)</label>
+    <input type="text" id="titleInput" placeholder="e.g., First Date, Paris Trip, Anniversary">
 
     <label>Notes</label>
-    <textarea id="notesInput"></textarea>
+    <textarea id="notesInput" placeholder="Add notes about this special day..."></textarea>
 
     <label>Photos</label>
     <div class="upload-zone" id="uploadZone">
-      📸 Drag & Drop or Click
-      <input type="file" id="imageInput" multiple hidden>
+      <div class="icon">📸</div>
+      <p>Drag & Drop Photos Here</p>
+      <span>or click to browse</span>
+      <input type="file" id="imageInput" accept="image/*" multiple hidden>
     </div>
 
     <div class="preview" id="preview"></div>
 
+    <div class="loading" id="loading">
+      <p>Uploading photos... 💕</p>
+    </div>
+
     <div class="actions">
       <button class="cancel" onclick="closeAdd()">Cancel</button>
-      <button class="save" onclick="saveDate()">Save</button>
+      <button class="save" onclick="saveDate()">Save Date</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ================= CLOUDINARY ================= */
+/* ================= CLOUDINARY CONFIGURATION ================= */
+/*
+  Your Cloudinary credentials are configured below.
+  Cloud Name: dzfarzaew
+  Upload Preset: date_gallery
+  
+  Images will be uploaded to your Cloudinary account
+  and organized in the 'date-gallery' folder.
+*/
 const CLOUD_NAME = 'dzfarzaew';
 const UPLOAD_PRESET = 'date_gallery';
 
-/* ================= DOM ================= */
+/* ================= DOM ELEMENTS ================= */
 const loginDiv = document.getElementById('login');
 const app = document.getElementById('app');
-const passwordInput = document.getElementById('password');
+const password = document.getElementById('password');
 const timeline = document.getElementById('timeline');
 const addModal = document.getElementById('addModal');
 const dateInput = document.getElementById('dateInput');
 const titleInput = document.getElementById('titleInput');
 const notesInput = document.getElementById('notesInput');
-const uploadZone = document.getElementById('uploadZone');
-const imageInput = document.getElementById('imageInput');
-const preview = document.getElementById('preview');
 
-/* ================= AUTH ================= */
+/* ================= AUTHENTICATION ================= */
 function login() {
-  if (passwordInput.value === 'hetandshruti') {
+  if (password.value === 'hetandshruti') {
     loginDiv.style.display = 'none';
     app.style.display = 'block';
     loadTimeline();
-  } else alert('Wrong password 💔');
+  } else {
+    alert('Wrong password 💔');
+    password.value = '';
+  }
 }
 
-/* ================= HEARTS ================= */
-const hearts = document.getElementById('hearts');
-for (let i=0;i<15;i++){
-  const h=document.createElement('img');
-  h.src='shrut-heart.png';
-  h.className='heart';
-  h.style.left=Math.random()*100+'vw';
-  h.style.animationDuration=15+Math.random()*20+'s';
-  hearts.appendChild(h);
+/* ================= FLOATING HEARTS BACKGROUND ================= */
+const heartsContainer = document.getElementById('hearts');
+for (let i = 0; i < 15; i++) {
+  const heart = document.createElement('img');
+  heart.src = 'shrut-heart.png';
+  heart.className = 'heart';
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.animationDuration = 15 + Math.random() * 25 + 's';
+  heart.style.animationDelay = Math.random() * 5 + 's';
+  heartsContainer.appendChild(heart);
 }
 
-/* ================= STORAGE ================= */
-const KEY='romantic_dates';
-const getData=()=>JSON.parse(localStorage.getItem(KEY)||'[]');
-const saveData=d=>localStorage.setItem(KEY,JSON.stringify(d));
+/* ================= DATA STORAGE ================= */
+const STORAGE_KEY = 'romantic_dates';
+const getData = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+const saveData = data => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
-function loadTimeline(){
-  timeline.innerHTML='';
-  const data=getData().sort((a,b)=>new Date(b.date)-new Date(a.date));
-  if(!data.length){
-    timeline.innerHTML='<p style="opacity:.6;text-align:center;">No dates yet 💕</p>';
+/* ================= LOAD TIMELINE ================= */
+function loadTimeline() {
+  timeline.innerHTML = '';
+  const dates = getData().sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  if (dates.length === 0) {
+    timeline.innerHTML = '<p style="text-align:center;opacity:0.6;padding:40px;">No dates yet. Click "Add New Date" to start! 💕</p>';
     return;
   }
-  data.forEach(d=>{
-    const el=document.createElement('div');
-    el.className='timeline-item';
-    el.innerHTML=`<h3>${d.title||'A Special Date'}</h3><small>${d.date}</small>`;
+
+  dates.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'timeline-item';
+    const formattedDate = new Date(d.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    el.innerHTML = `
+      <h3>${d.title || 'A Special Date'}</h3>
+      <small>${formattedDate}</small>
+      ${d.images && d.images.length > 0 ? `<p style="margin-top:8px;font-size:12px;opacity:0.7;">📷 ${d.images.length} photo${d.images.length > 1 ? 's' : ''}</p>` : ''}
+    `;
     timeline.appendChild(el);
   });
 }
 
-/* ================= MODAL ================= */
-function openAdd(){
-  addModal.style.display='flex';
-  preview.innerHTML='';
-  imageInput.value='';
+/* ================= MODAL CONTROLS ================= */
+function openAdd() {
+  addModal.style.display = 'flex';
+  dateInput.value = '';
+  titleInput.value = '';
+  notesInput.value = '';
+  imageInput.value = '';
+  preview.innerHTML = '';
 }
-function closeAdd(){ addModal.style.display='none'; }
 
-/* ================= UPLOAD ================= */
-uploadZone.onclick=()=>imageInput.click();
-uploadZone.ondragover=e=>{e.preventDefault();uploadZone.classList.add('dragover');};
-uploadZone.ondragleave=()=>uploadZone.classList.remove('dragover');
-uploadZone.ondrop=e=>{
+function closeAdd() {
+  addModal.style.display = 'none';
+}
+
+/* ================= DRAG & DROP + UPLOAD ================= */
+const uploadZone = document.getElementById('uploadZone');
+const imageInput = document.getElementById('imageInput');
+const preview = document.getElementById('preview');
+
+uploadZone.onclick = () => imageInput.click();
+
+// Drag and drop handlers
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('dragover');
+});
+
+uploadZone.addEventListener('drop', (e) => {
   e.preventDefault();
   uploadZone.classList.remove('dragover');
-  imageInput.files=e.dataTransfer.files;
-  showPreview();
-};
-imageInput.onchange=showPreview;
+  imageInput.files = e.dataTransfer.files;
+  handleFileSelect();
+});
 
-function showPreview(){
-  preview.innerHTML='';
-  [...imageInput.files].forEach(f=>{
-    const r=new FileReader();
-    r.onload=e=>{
-      const img=document.createElement('img');
-      img.src=e.target.result;
-      preview.appendChild(img);
+imageInput.onchange = handleFileSelect;
+
+function handleFileSelect() {
+  preview.innerHTML = '';
+  const files = Array.from(imageInput.files);
+  
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.className = 'preview-item';
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      div.appendChild(img);
+      preview.appendChild(div);
     };
-    r.readAsDataURL(f);
+    reader.readAsDataURL(file);
   });
 }
 
-/* ================= SAVE ================= */
-async function saveDate(){
-  if(!dateInput.value){alert('Select date');return;}
-  const images=[];
-  for(let f of imageInput.files){
-    const fd=new FormData();
-    fd.append('file',f);
-    fd.append('upload_preset',UPLOAD_PRESET);
-    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-    const d=await r.json();
-    images.push({url:d.secure_url});
+/* ================= SAVE DATE WITH CLOUDINARY UPLOAD ================= */
+async function saveDate() {
+  if (!dateInput.value) {
+    alert('Please select a date! 📅');
+    return;
   }
-  const all=getData();
-  all.push({date:dateInput.value,title:titleInput.value,notes:notesInput.value,images});
-  saveData(all);
-  closeAdd();
-  loadTimeline();
-  alert('Saved 💕');
+
+  const loading = document.getElementById('loading');
+  loading.classList.add('active');
+  
+  const images = [];
+  
+  try {
+    // Upload each image to Cloudinary
+    for (let file of imageInput.files) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', UPLOAD_PRESET);
+      
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: formData }
+      );
+      
+      const data = await response.json();
+      images.push({ url: data.secure_url });
+    }
+
+    // Save to localStorage
+    const allDates = getData();
+    allDates.push({
+      date: dateInput.value,
+      title: titleInput.value,
+      notes: notesInput.value,
+      images: images
+    });
+    saveData(allDates);
+
+    loading.classList.remove('active');
+    closeAdd();
+    loadTimeline();
+    
+    alert('Date saved successfully! 💕');
+  } catch (error) {
+    loading.classList.remove('active');
+    alert('Error uploading photos. Please try again. 💔');
+    console.error('Upload error:', error);
+  }
 }
 
-addModal.onclick=e=>{if(e.target===addModal)closeAdd();};
+// Close modal when clicking outside
+addModal.addEventListener('click', (e) => {
+  if (e.target === addModal) {
+    closeAdd();
+  }
+});
 </script>
 
 </body>
