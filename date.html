@@ -8,11 +8,13 @@
 <!--
 ====================================================
 ROMANTIC DATE GALLERY – SINGLE FILE APP
-UPDATED ADD DATE MODAL + CLOUDINARY CONFIG
 ====================================================
 
-Cloudinary is already configured below.
-Just deploy to GitHub Pages.
+Cloudinary Credentials (ACTIVE):
+- Cloud Name: dzfarzaew
+- Upload Preset: date_gallery
+
+Password: hetandshruti
 
 Requires:
 - shrut-heart.png in same folder
@@ -29,15 +31,11 @@ Requires:
   --card: #FDFCFB;
   --border: #E8E3DD;
   --muted: #B8ADA3;
-  --danger: #C94A4A;
   --shadow: 0 10px 40px rgba(0,0,0,0.15);
+  --input-shadow: 0 0 0 3px rgba(255,181,197,0.2);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -57,14 +55,14 @@ body {
 
 .heart {
   position: absolute;
-  width: 18px;
-  opacity: 0.25;
+  width: 36px;
+  opacity: 0.3;
   animation: floatUp linear infinite;
 }
 
 @keyframes floatUp {
-  from { transform: translateY(110vh); }
-  to { transform: translateY(-20vh); }
+  from { transform: translateY(110vh) rotate(0deg); }
+  to { transform: translateY(-20vh) rotate(360deg); }
 }
 
 /* ================= LOGIN ================= */
@@ -77,34 +75,37 @@ body {
 
 .login-box {
   background: var(--card);
-  padding: 32px;
-  border-radius: 16px;
+  padding: 40px;
+  border-radius: 20px;
   box-shadow: var(--shadow);
   text-align: center;
-  width: 300px;
+  width: 340px;
 }
 
-.login-box img {
-  width: 40px;
-  margin-bottom: 12px;
-}
+.login-box img { width: 60px; margin-bottom: 16px; }
 
 .login-box input {
   width: 100%;
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 10px;
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 12px;
   border: 2px solid var(--border);
-  margin-top: 14px;
+  margin-top: 20px;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--input-shadow);
 }
 
 .login-box button {
-  margin-top: 14px;
-  height: 48px;
+  margin-top: 16px;
+  height: 50px;
   width: 100%;
   background: var(--accent);
   border: none;
-  border-radius: 24px;
+  border-radius: 25px;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -124,17 +125,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-header h1 {
-  font-size: 22px;
-}
+header h1 { font-size: 28px; }
 
 header button {
-  height: 44px;
-  padding: 0 20px;
-  border-radius: 22px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 24px;
   border: none;
   background: var(--accent);
   color: #fff;
@@ -145,546 +146,58 @@ header button {
 /* ================= TIMELINE ================= */
 .timeline {
   position: relative;
-  padding-left: 30px;
+  padding-left: 40px;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: var(--accent);
+  width: 3px;
+  background: linear-gradient(to bottom, var(--accent), rgba(255,181,197,0.3));
 }
 
 .timeline-item {
   background: var(--card);
-  padding: 16px;
-  margin-bottom: 20px;
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
-
-.timeline-item h3 {
-  font-size: 15px;
-}
-
-.timeline-item small {
-  opacity: 0.7;
-}
-
-/* ================= MODAL BACKDROP ================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-/* ================= ADD DATE MODAL ================= */
-.modal-content {
-  background: var(--card);
-  width: 500px;
-  max-width: 600px;
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: var(--shadow);
-  animation: modalIn 0.3s ease forwards;
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.modal-content h2 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 30px;
-}
-
-/* ================= FORM ================= */
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-input[type="date"],
-input[type="text"],
-textarea {
-  width: 100%;
-  font-family: Verdana;
-  font-size: 15px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 20px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(255,181,197,0.25);
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-/* ================= UPLOAD ================= */
-.upload-zone {
-  height: 160px;
-  border: 2px dashed #D4CEC7;
-  border-radius: 12px;
-  background: #FAFAF8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 25px;
-}
-
-.upload-zone:hover {
-  background: var(--bg);
-  border-color: var(--accent);
-}
-
-.upload-zone.dragover {
-  border-color: var(--accent);
-}
-
-.upload-zone .icon {
-  font-size: 40px;
-  color: var(--muted);
-}
-
-.upload-zone p {
-  font-size: 16px;
-}
-
-.upload-zone span {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* ================= PREVIEW ================= */
-.preview {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
-  gap: 10px;
-  margin-bottom: 25px;
-}
-
-.preview img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* ================= BUTTONS ================= */
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.actions button {
-  height: 50px;
-  padding: 0 32px;
-  border-radius: 25px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.save {
-  background: var(--accent);
-  color: #fff;
-}
-
-.save:hover {
-  background: var(--accent-hover);
-  transform: scale(1.02);
-}
-
-.cancel {
-  background: #F0EBE6;
-}
-
-.cancel:hover {
-  background: #E5DED7;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 600px) {
-  .modal-content {
-    width: 95%;
-    padding: 24px;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
-
-  .actions button {
-    width: 100%;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="hearts" id="hearts"></div>
-
-<!-- LOGIN -->
-<div id="login">
-  <div class="login-box">
-    <img src="shrut-heart.png" alt="heart">
-    <h3>Enter Password</h3>
-    <input type="password" id="password">
-    <button onclick="login()">Open</button>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app">
-  <header>
-    <h1>Our Dates 💕</h1>
-    <button onclick="openAdd()">＋ Add New Date</button>
-  </header>
-  <div class="timeline" id="timeline"></div>
-</div>
-
-<!-- ADD DATE MODAL -->
-<div class="modal" id="addModal">
-  <div class="modal-content">
-    <h2>Add Date</h2>
-
-    <label>Date</label>
-    <input type="date" id="dateInput">
-
-    <label>Title</label>
-    <input type="text" id="titleInput" placeholder="e.g., First Date, Paris Trip">
-
-    <label>Notes</label>
-    <textarea id="notesInput" placeholder="Add notes about this special day..."></textarea>
-
-    <label>Photos</label>
-    <div class="upload-zone" id="uploadZone">
-      <div class="icon">📸</div>
-      <p>Drag & Drop Photos Here</p>
-      <span>or click to browse</span>
-      <input type="file" id="imageInput" multiple hidden>
-    </div>
-
-    <div class="preview" id="preview"></div>
-
-    <div class="actions">
-      <button class="cancel" onclick="closeAdd()">Cancel</button>
-      <button class="save" onclick="saveDate()">Save</button>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ================= CLOUDINARY ================= */
-const CLOUD_NAME = 'dzfarzaew';
-const UPLOAD_PRESET = 'date_gallery';
-
-/* ================= AUTH ================= */
-function login() {
-  if (password.value === 'hetandshruti') {
-    loginDiv.style.display = 'none';
-    app.style.display = 'block';
-    loadTimeline();
-  } else alert('Wrong password');
-}
-
-/* ================= HEARTS ================= */
-for (let i = 0; i < 20; i++) {
-  const h = document.createElement('img');
-  h.src = 'shrut-heart.png';
-  h.className = 'heart';
-  h.style.left = Math.random() * 100 + 'vw';
-  h.style.animationDuration = 20 + Math.random() * 20 + 's';
-  hearts.appendChild(h);
-}
-
-/* ================= DATA ================= */
-const STORAGE = 'romantic_dates';
-const getData = () => JSON.parse(localStorage.getItem(STORAGE) || '[]');
-const saveData = d => localStorage.setItem(STORAGE, JSON.stringify(d));
-
-function loadTimeline() {
-  timeline.innerHTML = '';
-  getData().sort((a,b)=>new Date(b.date)-new Date(a.date))
-    .forEach(d=>{
-      const el = document.createElement('div');
-      el.className = 'timeline-item';
-      el.innerHTML = `<h3>${d.title||'A Date'}</h3><small>${d.date}</small>`;
-      timeline.appendChild(el);
-    });
-}
-
-/* ================= MODAL ================= */
-function openAdd(){ addModal.style.display='flex'; }
-function closeAdd(){ addModal.style.display='none'; preview.innerHTML=''; }
-
-/* ================= UPLOAD PREVIEW ================= */
-uploadZone.onclick = () => imageInput.click();
-imageInput.onchange = () => {
-  preview.innerHTML='';
-  [...imageInput.files].forEach(f=>{
-    const img=document.createElement('img');
-    img.src=URL.createObjectURL(f);
-    preview.appendChild(img);
-  });
-};
-
-/* ================= SAVE ================= */
-async function saveDate() {
-  const images=[];
-  for (let f of imageInput.files) {
-    const fd=new FormData();
-    fd.append('file',f);
-    fd.append('upload_preset',UPLOAD_PRESET);
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-    const d=await res.json();
-    images.push({url:d.secure_url});
-  }
-
-  const all=getData();
-  all.push({
-    date:dateInput.value,
-    title:titleInput.value,
-    notes:notesInput.value,
-    images
-  });
-  saveData(all);
-  closeAdd();
-  loadTimeline();
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Our Dates 💕</title>
-
-<!--
-====================================================
-ROMANTIC DATE GALLERY – SINGLE FILE APP
-UPDATED ADD DATE MODAL + CLOUDINARY CONFIG
-====================================================
-
-Cloudinary is already configured below.
-Just deploy to GitHub Pages.
-
-Requires:
-- shrut-heart.png in same folder
-====================================================
--->
-
-<style>
-/* ================= ROOT THEME ================= */
-:root {
-  --bg: #F5F1ED;
-  --text: #5C4B51;
-  --accent: #FFB5C5;
-  --accent-hover: #FFA0B8;
-  --card: #FDFCFB;
-  --border: #E8E3DD;
-  --muted: #B8ADA3;
-  --danger: #C94A4A;
-  --shadow: 0 10px 40px rgba(0,0,0,0.15);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* ================= FLOATING HEARTS ================= */
-.hearts {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.heart {
-  position: absolute;
-  width: 18px;
-  opacity: 0.25;
-  animation: floatUp linear infinite;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(110vh); }
-  to { transform: translateY(-20vh); }
-}
-
-/* ================= LOGIN ================= */
-#login {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-box {
-  background: var(--card);
-  padding: 32px;
+  padding: 20px;
+  margin-bottom: 24px;
   border-radius: 16px;
   box-shadow: var(--shadow);
-  text-align: center;
-  width: 300px;
-}
-
-.login-box img {
-  width: 40px;
-  margin-bottom: 12px;
-}
-
-.login-box input {
-  width: 100%;
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 2px solid var(--border);
-  margin-top: 14px;
-}
-
-.login-box button {
-  margin-top: 14px;
-  height: 48px;
-  width: 100%;
-  background: var(--accent);
-  border: none;
-  border-radius: 24px;
-  color: #fff;
-  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* ================= MAIN APP ================= */
-#app {
-  display: none;
-  padding: 24px;
-  max-width: 900px;
-  margin: auto;
-  position: relative;
-  z-index: 1;
+.timeline-item:hover {
+  transform: translateX(6px);
+  box-shadow: 0 10px 28px rgba(255,181,197,0.3);
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
+.timeline-item h3 { font-size: 18px; margin-bottom: 6px; }
+.timeline-item small { opacity: 0.7; }
 
-header h1 {
-  font-size: 22px;
-}
-
-header button {
-  height: 44px;
-  padding: 0 20px;
-  border-radius: 22px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* ================= TIMELINE ================= */
-.timeline {
-  position: relative;
-  padding-left: 30px;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 10px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--accent);
-}
-
-.timeline-item {
-  background: var(--card);
-  padding: 16px;
-  margin-bottom: 20px;
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
-
-.timeline-item h3 {
-  font-size: 15px;
-}
-
-.timeline-item small {
-  opacity: 0.7;
-}
-
-/* ================= MODAL BACKDROP ================= */
+/* ================= MODAL ================= */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 100;
 }
 
-/* ================= ADD DATE MODAL ================= */
 .modal-content {
   background: var(--card);
-  width: 500px;
-  max-width: 600px;
+  width: 90%;
+  max-width: 550px;
   padding: 40px;
   border-radius: 24px;
   box-shadow: var(--shadow);
   animation: modalIn 0.3s ease forwards;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes modalIn {
@@ -692,46 +205,30 @@ header button {
   to { opacity: 1; transform: scale(1); }
 }
 
-.modal-content h2 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 30px;
-}
-
 /* ================= FORM ================= */
 label {
-  display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.5px;
   text-transform: uppercase;
+  display: block;
   margin-bottom: 8px;
 }
 
-input[type="date"],
-input[type="text"],
-textarea {
+input, textarea {
   width: 100%;
-  font-family: Verdana;
-  font-size: 15px;
   border: 2px solid var(--border);
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 20px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input:focus,
-textarea:focus {
+input:focus, textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(255,181,197,0.25);
+  box-shadow: var(--input-shadow);
 }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
+textarea { min-height: 100px; resize: vertical; }
 
 /* ================= UPLOAD ================= */
 .upload-zone {
@@ -743,41 +240,19 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 25px;
-}
-
-.upload-zone:hover {
-  background: var(--bg);
-  border-color: var(--accent);
+  margin-bottom: 20px;
 }
 
 .upload-zone.dragover {
   border-color: var(--accent);
 }
 
-.upload-zone .icon {
-  font-size: 40px;
-  color: var(--muted);
-}
-
-.upload-zone p {
-  font-size: 16px;
-}
-
-.upload-zone span {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* ================= PREVIEW ================= */
 .preview {
   display: grid;
   grid-template-columns: repeat(auto-fill, 80px);
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .preview img {
@@ -787,12 +262,11 @@ textarea {
   border-radius: 8px;
 }
 
-/* ================= BUTTONS ================= */
+/* ================= ACTIONS ================= */
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 30px;
 }
 
 .actions button {
@@ -800,44 +274,17 @@ textarea {
   padding: 0 32px;
   border-radius: 25px;
   border: none;
-  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.save {
-  background: var(--accent);
-  color: #fff;
-}
-
-.save:hover {
-  background: var(--accent-hover);
-  transform: scale(1.02);
-}
-
-.cancel {
-  background: #F0EBE6;
-}
-
-.cancel:hover {
-  background: #E5DED7;
-}
+.save { background: var(--accent); color: #fff; }
+.cancel { background: #F0EBE6; }
 
 /* ================= MOBILE ================= */
-@media (max-width: 600px) {
-  .modal-content {
-    width: 95%;
-    padding: 24px;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
-
-  .actions button {
-    width: 100%;
-  }
+@media (max-width:600px){
+  .actions { flex-direction: column; }
+  .actions button { width: 100%; }
 }
 </style>
 </head>
@@ -849,17 +296,17 @@ textarea {
 <!-- LOGIN -->
 <div id="login">
   <div class="login-box">
-    <img src="shrut-heart.png" alt="heart">
-    <h3>Enter Password</h3>
-    <input type="password" id="password">
-    <button onclick="login()">Open</button>
+    <img src="shrut-heart.png" alt="">
+    <h3>Our Special Place</h3>
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="login()">Enter 💕</button>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app">
   <header>
-    <h1>Our Dates 💕</h1>
+    <h1>Our Memories 💕</h1>
     <button onclick="openAdd()">＋ Add New Date</button>
   </header>
   <div class="timeline" id="timeline"></div>
@@ -874,16 +321,14 @@ textarea {
     <input type="date" id="dateInput">
 
     <label>Title</label>
-    <input type="text" id="titleInput" placeholder="e.g., First Date, Paris Trip">
+    <input type="text" id="titleInput">
 
     <label>Notes</label>
-    <textarea id="notesInput" placeholder="Add notes about this special day..."></textarea>
+    <textarea id="notesInput"></textarea>
 
     <label>Photos</label>
     <div class="upload-zone" id="uploadZone">
-      <div class="icon">📸</div>
-      <p>Drag & Drop Photos Here</p>
-      <span>or click to browse</span>
+      📸 Drag & Drop or Click
       <input type="file" id="imageInput" multiple hidden>
     </div>
 
@@ -901,79 +346,113 @@ textarea {
 const CLOUD_NAME = 'dzfarzaew';
 const UPLOAD_PRESET = 'date_gallery';
 
+/* ================= DOM ================= */
+const loginDiv = document.getElementById('login');
+const app = document.getElementById('app');
+const passwordInput = document.getElementById('password');
+const timeline = document.getElementById('timeline');
+const addModal = document.getElementById('addModal');
+const dateInput = document.getElementById('dateInput');
+const titleInput = document.getElementById('titleInput');
+const notesInput = document.getElementById('notesInput');
+const uploadZone = document.getElementById('uploadZone');
+const imageInput = document.getElementById('imageInput');
+const preview = document.getElementById('preview');
+
 /* ================= AUTH ================= */
 function login() {
-  if (password.value === 'hetandshruti') {
+  if (passwordInput.value === 'hetandshruti') {
     loginDiv.style.display = 'none';
     app.style.display = 'block';
     loadTimeline();
-  } else alert('Wrong password');
+  } else alert('Wrong password 💔');
 }
 
 /* ================= HEARTS ================= */
-for (let i = 0; i < 20; i++) {
-  const h = document.createElement('img');
-  h.src = 'shrut-heart.png';
-  h.className = 'heart';
-  h.style.left = Math.random() * 100 + 'vw';
-  h.style.animationDuration = 20 + Math.random() * 20 + 's';
+const hearts = document.getElementById('hearts');
+for (let i=0;i<15;i++){
+  const h=document.createElement('img');
+  h.src='shrut-heart.png';
+  h.className='heart';
+  h.style.left=Math.random()*100+'vw';
+  h.style.animationDuration=15+Math.random()*20+'s';
   hearts.appendChild(h);
 }
 
-/* ================= DATA ================= */
-const STORAGE = 'romantic_dates';
-const getData = () => JSON.parse(localStorage.getItem(STORAGE) || '[]');
-const saveData = d => localStorage.setItem(STORAGE, JSON.stringify(d));
+/* ================= STORAGE ================= */
+const KEY='romantic_dates';
+const getData=()=>JSON.parse(localStorage.getItem(KEY)||'[]');
+const saveData=d=>localStorage.setItem(KEY,JSON.stringify(d));
 
-function loadTimeline() {
-  timeline.innerHTML = '';
-  getData().sort((a,b)=>new Date(b.date)-new Date(a.date))
-    .forEach(d=>{
-      const el = document.createElement('div');
-      el.className = 'timeline-item';
-      el.innerHTML = `<h3>${d.title||'A Date'}</h3><small>${d.date}</small>`;
-      timeline.appendChild(el);
-    });
+function loadTimeline(){
+  timeline.innerHTML='';
+  const data=getData().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(!data.length){
+    timeline.innerHTML='<p style="opacity:.6;text-align:center;">No dates yet 💕</p>';
+    return;
+  }
+  data.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='timeline-item';
+    el.innerHTML=`<h3>${d.title||'A Special Date'}</h3><small>${d.date}</small>`;
+    timeline.appendChild(el);
+  });
 }
 
 /* ================= MODAL ================= */
-function openAdd(){ addModal.style.display='flex'; }
-function closeAdd(){ addModal.style.display='none'; preview.innerHTML=''; }
+function openAdd(){
+  addModal.style.display='flex';
+  preview.innerHTML='';
+  imageInput.value='';
+}
+function closeAdd(){ addModal.style.display='none'; }
 
-/* ================= UPLOAD PREVIEW ================= */
-uploadZone.onclick = () => imageInput.click();
-imageInput.onchange = () => {
+/* ================= UPLOAD ================= */
+uploadZone.onclick=()=>imageInput.click();
+uploadZone.ondragover=e=>{e.preventDefault();uploadZone.classList.add('dragover');};
+uploadZone.ondragleave=()=>uploadZone.classList.remove('dragover');
+uploadZone.ondrop=e=>{
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  imageInput.files=e.dataTransfer.files;
+  showPreview();
+};
+imageInput.onchange=showPreview;
+
+function showPreview(){
   preview.innerHTML='';
   [...imageInput.files].forEach(f=>{
-    const img=document.createElement('img');
-    img.src=URL.createObjectURL(f);
-    preview.appendChild(img);
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      preview.appendChild(img);
+    };
+    r.readAsDataURL(f);
   });
-};
+}
 
 /* ================= SAVE ================= */
-async function saveDate() {
+async function saveDate(){
+  if(!dateInput.value){alert('Select date');return;}
   const images=[];
-  for (let f of imageInput.files) {
+  for(let f of imageInput.files){
     const fd=new FormData();
     fd.append('file',f);
     fd.append('upload_preset',UPLOAD_PRESET);
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-    const d=await res.json();
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
+    const d=await r.json();
     images.push({url:d.secure_url});
   }
-
   const all=getData();
-  all.push({
-    date:dateInput.value,
-    title:titleInput.value,
-    notes:notesInput.value,
-    images
-  });
+  all.push({date:dateInput.value,title:titleInput.value,notes:notesInput.value,images});
   saveData(all);
   closeAdd();
   loadTimeline();
+  alert('Saved 💕');
 }
+
+addModal.onclick=e=>{if(e.target===addModal)closeAdd();};
 </script>
 
 </body>
