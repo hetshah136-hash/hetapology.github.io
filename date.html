@@ -157,6 +157,78 @@ header {
 header h1 {
   font-size: 28px;
   color: var(--text);
+  flex: 1;
+}
+
+.relationship-counter {
+  background: linear-gradient(135deg, var(--accent), #FFD6E0);
+  padding: 16px 24px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(255,181,197,0.3);
+  margin-bottom: 20px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.relationship-counter h3 {
+  font-size: 16px;
+  color: white;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.relationship-counter .days {
+  font-size: 36px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.relationship-counter .label {
+  font-size: 14px;
+  color: white;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(255,181,197,0.3);
+}
+
+.stat-card .number {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.stat-card .label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 header button {
@@ -656,6 +728,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <h1>Our Memories 💕</h1>
     <button onclick="openAdd()">＋ Add New Date</button>
   </header>
+  
+  <!-- Relationship Counter -->
+  <div class="relationship-counter">
+    <h3>Together For</h3>
+    <div class="days" id="daysTogether">0</div>
+    <div class="label">Days of Love</div>
+  </div>
+  
+  <!-- Stats -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="number" id="totalDates">0</div>
+      <div class="label">Dates</div>
+    </div>
+    <div class="stat-card">
+      <div class="number" id="totalPhotos">0</div>
+      <div class="label">Photos</div>
+    </div>
+    <div class="stat-card">
+      <div class="number" id="thisYear">0</div>
+      <div class="label">This Year</div>
+    </div>
+  </div>
+  
   <div class="timeline" id="timeline"></div>
 </div>
 
@@ -664,7 +760,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <div class="modal-content" style="max-width: 700px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h2 id="viewTitle" style="margin: 0;">Date Details</h2>
-      <button onclick="closeView()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text);">✕</button>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="editCurrentDate()" style="background: var(--accent); border: none; padding: 8px 16px; border-radius: 20px; color: white; cursor: pointer; font-weight: 600;">✏️ Edit</button>
+        <button onclick="deleteCurrentDate()" style="background: var(--danger); border: none; padding: 8px 16px; border-radius: 20px; color: white; cursor: pointer; font-weight: 600;">🗑️ Delete</button>
+        <button onclick="closeView()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text);">✕</button>
+      </div>
     </div>
     
     <p id="viewDate" style="font-size: 16px; color: var(--muted); margin-bottom: 10px;"></p>
@@ -673,6 +773,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div id="viewImages" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;"></div>
     
     <div class="actions" style="margin-top: 30px;">
+      <button class="save" onclick="openAddPhotos()">📷 Add More Photos</button>
       <button class="cancel" onclick="closeView()">Close</button>
     </div>
   </div>
@@ -725,6 +826,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 */
 const CLOUD_NAME = 'dzfarzaew';
 const UPLOAD_PRESET = 'date_gallery';
+const RELATIONSHIP_START = new Date('2026-01-01'); // January 1, 2026
 
 /* ================= DOM ELEMENTS ================= */
 const loginDiv = document.getElementById('login');
@@ -756,8 +858,41 @@ window.addEventListener('DOMContentLoaded', () => {
     loginDiv.style.display = 'none';
     app.style.display = 'block';
     loadTimeline();
+    updateStats();
+    updateDaysCounter();
   }
+  
+  // Update days counter every second
+  setInterval(updateDaysCounter, 1000);
 });
+
+/* ================= RELATIONSHIP COUNTER ================= */
+function updateDaysCounter() {
+  const now = new Date();
+  const diff = now - RELATIONSHIP_START;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const counter = document.getElementById('daysTogether');
+  if (counter) {
+    counter.textContent = days;
+  }
+}
+
+/* ================= STATS ================= */
+function updateStats() {
+  const dates = getData();
+  const currentYear = new Date().getFullYear();
+  
+  // Total dates
+  document.getElementById('totalDates').textContent = dates.length;
+  
+  // Total photos
+  const totalPhotos = dates.reduce((sum, d) => sum + (d.images?.length || 0), 0);
+  document.getElementById('totalPhotos').textContent = totalPhotos;
+  
+  // Dates this year
+  const thisYear = dates.filter(d => new Date(d.date).getFullYear() === currentYear).length;
+  document.getElementById('thisYear').textContent = thisYear;
+}
 
 /* ================= FLOATING HEARTS BACKGROUND ================= */
 const heartsContainer = document.getElementById('hearts');
@@ -817,13 +952,15 @@ function loadTimeline() {
     el.innerHTML = `
       <h3>${d.title || 'A Special Date'}</h3>
       <small>${formattedDate}</small>
-      ${d.images && d.images.length > 0 ? `<p style="margin-top:4px;font-size:12px;opacity:0.7;">📷 ${d.images.length} photo${d.images.length > 1 ? 's' : ''}</p>` : ''}
+      ${d.images && d.images.length > 0 ? `<p style="margin-top:4px;font-size:12px;opacity:0.7;">📷 ${d.images.length} photo${d.images.length > 1 ? 's' : ''}</p>` : '<p style="margin-top:4px;font-size:12px;opacity:0.5;">No photos yet 📸</p>'}
       <button class="view-btn" onclick="viewDate(${index}); event.stopPropagation();">
         👀 View Memories
       </button>
     `;
     timeline.appendChild(el);
   });
+  
+  updateStats();
 }
 
 /* ================= MODAL CONTROLS ================= */
@@ -834,10 +971,14 @@ function openAdd() {
   notesInput.value = '';
   imageInput.value = '';
   preview.innerHTML = '';
+  delete addModal.dataset.editing;
+  document.querySelector('.modal-content h2').textContent = 'Add Date';
 }
 
 function closeAdd() {
   addModal.style.display = 'none';
+  delete addModal.dataset.editing;
+  document.querySelector('.modal-content h2').textContent = 'Add Date';
 }
 
 /* ================= DRAG & DROP + UPLOAD ================= */
@@ -912,14 +1053,40 @@ async function saveDate() {
       images.push({ url: data.secure_url });
     }
 
-    // Save to localStorage
     const allDates = getData();
-    allDates.push({
-      date: dateInput.value,
-      title: titleInput.value,
-      notes: notesInput.value,
-      images: images
-    });
+    
+    // Check if editing
+    if (addModal.dataset.editing !== undefined) {
+      const editIndex = parseInt(addModal.dataset.editing);
+      const sortedDates = [...allDates].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const dateToEdit = sortedDates[editIndex];
+      
+      const actualIndex = allDates.findIndex(d => 
+        d.date === dateToEdit.date && 
+        d.title === dateToEdit.title
+      );
+      
+      // Update existing date
+      allDates[actualIndex].date = dateInput.value;
+      allDates[actualIndex].title = titleInput.value;
+      allDates[actualIndex].notes = notesInput.value;
+      
+      // Add new images to existing ones
+      if (images.length > 0) {
+        allDates[actualIndex].images = [...(allDates[actualIndex].images || []), ...images];
+      }
+      
+      delete addModal.dataset.editing;
+    } else {
+      // Add new date
+      allDates.push({
+        date: dateInput.value,
+        title: titleInput.value,
+        notes: notesInput.value,
+        images: images
+      });
+    }
+    
     saveData(allDates);
 
     loading.classList.remove('active');
