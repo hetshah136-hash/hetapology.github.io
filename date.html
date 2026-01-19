@@ -55,18 +55,19 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
 }
 
 .heart {
   position: absolute;
   width: 36px; /* DOUBLED from 18px */
-  opacity: 0.3;
+  opacity: 0.25;
   animation: floatUp linear infinite;
 }
 
 @keyframes floatUp {
-  from { transform: translateY(110vh) rotate(0deg); }
-  to { transform: translateY(-20vh) rotate(360deg); }
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-20vh); }
 }
 
 /* ================= LOGIN ================= */
@@ -200,7 +201,6 @@ header button:hover {
   margin-bottom: 24px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
   border: 2px solid transparent;
@@ -234,6 +234,30 @@ header button:hover {
 .timeline-item small {
   opacity: 0.7;
   font-size: 13px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255,181,197,0.4);
 }
 
 /* ================= MODAL BACKDROP ================= */
@@ -310,6 +334,24 @@ textarea {
   margin-bottom: 20px;
   transition: all 0.2s ease;
   background: #FAFAF8;
+}
+
+/* Custom Date Picker Styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: opacity(0.6);
+}
+
+input[type="date"]::-webkit-datetime-edit {
+  color: var(--text);
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: opacity(1);
 }
 
 input[type="date"] {
@@ -527,6 +569,21 @@ textarea {
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--accent-hover);
 }
+
+/* ================= CUSTOM CALENDAR STYLING ================= */
+/* Style the native date picker calendar */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><text y="20" font-size="20">📅</text></svg>');
+  cursor: pointer;
+}
+
+/* Calendar dropdown styling (limited browser support) */
+::-webkit-datetime-edit { color: var(--text); }
+::-webkit-datetime-edit-year-field { color: var(--text); }
+::-webkit-datetime-edit-month-field { color: var(--text); }
+::-webkit-datetime-edit-day-field { color: var(--text); }
+::-webkit-datetime-edit-text { color: var(--muted); }
+
 </style>
 </head>
 
@@ -626,6 +683,7 @@ const app = document.getElementById('app');
 const password = document.getElementById('password');
 const timeline = document.getElementById('timeline');
 const addModal = document.getElementById('addModal');
+const viewModal = document.getElementById('viewModal');
 const dateInput = document.getElementById('dateInput');
 const titleInput = document.getElementById('titleInput');
 const notesInput = document.getElementById('notesInput');
@@ -644,13 +702,26 @@ function login() {
 
 /* ================= FLOATING HEARTS BACKGROUND ================= */
 const heartsContainer = document.getElementById('hearts');
-for (let i = 0; i < 15; i++) {
+const heartPositions = []; // Track positions to avoid overlap
+
+for (let i = 0; i < 12; i++) {
   const heart = document.createElement('img');
   heart.src = 'shrut-heart.png';
   heart.className = 'heart';
-  heart.style.left = Math.random() * 100 + 'vw';
-  heart.style.animationDuration = 15 + Math.random() * 25 + 's';
-  heart.style.animationDelay = Math.random() * 5 + 's';
+  
+  // Generate non-overlapping positions
+  let leftPos;
+  let attempts = 0;
+  do {
+    leftPos = Math.random() * 90; // 0-90% to keep hearts on screen
+    attempts++;
+  } while (attempts < 20 && heartPositions.some(pos => Math.abs(pos - leftPos) < 10));
+  
+  heartPositions.push(leftPos);
+  
+  heart.style.left = leftPos + 'vw';
+  heart.style.animationDuration = 20 + Math.random() * 30 + 's';
+  heart.style.animationDelay = Math.random() * 10 + 's';
   heartsContainer.appendChild(heart);
 }
 
@@ -681,14 +752,16 @@ function loadTimeline() {
   dates.forEach((d, index) => {
     const el = document.createElement('div');
     el.className = 'timeline-item';
-    el.onclick = () => viewDate(index);
     
     const formattedDate = formatDate(d.date);
     
     el.innerHTML = `
       <h3>${d.title || 'A Special Date'}</h3>
       <small>${formattedDate}</small>
-      ${d.images && d.images.length > 0 ? `<p style="margin-top:8px;font-size:12px;opacity:0.7;">📷 ${d.images.length} photo${d.images.length > 1 ? 's' : ''}</p>` : ''}
+      ${d.images && d.images.length > 0 ? `<p style="margin-top:4px;font-size:12px;opacity:0.7;">📷 ${d.images.length} photo${d.images.length > 1 ? 's' : ''}</p>` : ''}
+      <button class="view-btn" onclick="viewDate(${index}); event.stopPropagation();">
+        👀 View Memories
+      </button>
     `;
     timeline.appendChild(el);
   });
@@ -808,6 +881,47 @@ addModal.addEventListener('click', (e) => {
     closeAdd();
   }
 });
+
+viewModal.addEventListener('click', (e) => {
+  if (e.target === viewModal) {
+    closeView();
+  }
+});
+
+/* ================= VIEW DATE DETAILS ================= */
+function viewDate(index) {
+  const dates = getData().sort((a, b) => new Date(b.date) - new Date(a.date));
+  const date = dates[index];
+  
+  document.getElementById('viewTitle').textContent = date.title || 'A Special Date';
+  document.getElementById('viewDate').textContent = formatDate(date.date);
+  document.getElementById('viewNotes').textContent = date.notes || 'No notes added.';
+  
+  const imagesContainer = document.getElementById('viewImages');
+  imagesContainer.innerHTML = '';
+  
+  if (date.images && date.images.length > 0) {
+    date.images.forEach(img => {
+      const imgEl = document.createElement('img');
+      imgEl.src = img.url;
+      imgEl.style.width = '100%';
+      imgEl.style.height = '200px';
+      imgEl.style.objectFit = 'cover';
+      imgEl.style.borderRadius = '12px';
+      imgEl.style.cursor = 'pointer';
+      imgEl.onclick = () => window.open(img.url, '_blank');
+      imagesContainer.appendChild(imgEl);
+    });
+  } else {
+    imagesContainer.innerHTML = '<p style="opacity:0.6;">No photos uploaded.</p>';
+  }
+  
+  viewModal.style.display = 'flex';
+}
+
+function closeView() {
+  viewModal.style.display = 'none';
+}
 </script>
 
 </body>
