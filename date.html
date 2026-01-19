@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Het ❤️ Shruti</title>
+
+<!--
+====================================================
+ROMANTIC DATE GALLERY – SINGLE FILE APP
+====================================================
+
+SETUP INSTRUCTIONS:
+
+1. Create a Cloudinary account: https://cloudinary.com
+2. Go to Dashboard → note your Cloud Name
+3. Go to Settings → Upload → Add Upload Preset (unsigned)
+4. Replace values below
+
+// CLOUDINARY SETTINGS
+const CLOUD_NAME = 'YOUR_CLOUD_NAME_HERE';
+const UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET_HERE';
+
+5. Place shrut-heart.png in the same folder as this file
+6. Deploy to GitHub Pages
+====================================================
+-->
+
+<style>
+/* ================= CSS VARIABLES ================= */
+:root {
+  --bg: #F5F1ED;
+  --text: #5C4B51;
+  --accent: #FFB5C5;
+  --card: #ffffff;
+  --danger: #C94A4A;
+  --shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ================= FLOATING HEARTS ================= */
+.hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heart {
+  position: absolute;
+  width: 18px;
+  opacity: 0.25;
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-20vh); }
+}
+
+/* ================= PASSWORD SCREEN ================= */
+#login {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background: var(--card);
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  width: 300px;
+}
+
+.login-box img {
+  width: 40px;
+  margin-bottom: 12px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.login-box button {
+  margin-top: 14px;
+  padding: 10px;
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ================= MAIN APP ================= */
+#app {
+  display: none;
+  padding: 24px;
+  max-width: 900px;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 20px;
+}
+
+header button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+/* ================= TIMELINE ================= */
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.timeline-item {
+  background: var(--card);
+  padding: 14px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.timeline-item h3 {
+  font-size: 14px;
+}
+
+.timeline-item small {
+  opacity: 0.7;
+}
+
+/* ================= MODALS ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+}
+
+/* ================= GALLERY ================= */
+.gallery img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* ================= BUTTONS ================= */
+.danger {
+  background: var(--danger);
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <img src="shrut-heart.png" alt="heart">
+    <h3>Enter Password</h3>
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Open</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <h1>Our Dates 💕</h1>
+    <button onclick="openAdd()">＋ Add New Date</button>
+  </header>
+
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<!-- ADD DATE MODAL -->
+<div class="modal" id="addModal">
+  <div class="modal-content">
+    <h3>Add Date</h3>
+    <input type="date" id="dateInput"><br><br>
+    <input type="text" id="titleInput" placeholder="Title (optional)"><br><br>
+    <textarea id="notesInput" placeholder="Notes"></textarea><br><br>
+    <input type="file" id="imageInput" multiple><br><br>
+    <button onclick="saveDate()">Save</button>
+    <button onclick="closeAdd()">Cancel</button>
+  </div>
+</div>
+
+<script>
+/* ================= CLOUDINARY ================= */
+const CLOUD_NAME = 'YOUR_CLOUD_NAME_HERE';
+const UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET_HERE';
+
+/* ================= AUTH ================= */
+function login() {
+  if (document.getElementById('password').value === 'hetandshruti') {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadTimeline();
+  } else {
+    alert('Wrong password');
+  }
+}
+
+/* ================= FLOATING HEARTS ================= */
+for (let i = 0; i < 20; i++) {
+  const h = document.createElement('img');
+  h.src = 'shrut-heart.png';
+  h.className = 'heart';
+  h.style.left = Math.random() * 100 + 'vw';
+  h.style.animationDuration = 20 + Math.random() * 20 + 's';
+  document.getElementById('hearts').appendChild(h);
+}
+
+/* ================= DATA ================= */
+const STORAGE_KEY = 'romantic_dates';
+
+function getData() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+/* ================= TIMELINE ================= */
+function loadTimeline() {
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
+  const data = getData().sort((a,b)=> new Date(b.date)-new Date(a.date));
+
+  data.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'timeline-item';
+    div.innerHTML = `<h3>${d.title || 'A Date'}</h3><small>${d.date}</small>`;
+    timeline.appendChild(div);
+  });
+}
+
+/* ================= ADD DATE ================= */
+function openAdd() {
+  document.getElementById('addModal').style.display = 'flex';
+}
+
+function closeAdd() {
+  document.getElementById('addModal').style.display = 'none';
+}
+
+async function saveDate() {
+  const date = document.getElementById('dateInput').value;
+  const title = document.getElementById('titleInput').value;
+  const notes = document.getElementById('notesInput').value;
+  const files = document.getElementById('imageInput').files;
+
+  const images = [];
+  for (let f of files) {
+    const fd = new FormData();
+    fd.append('file', f);
+    fd.append('upload_preset', UPLOAD_PRESET);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: 'POST',
+      body: fd
+    });
+    const data = await res.json();
+    images.push({ url: data.secure_url });
+  }
+
+  const all = getData();
+  all.push({ date, title, notes, images });
+  saveData(all);
+  closeAdd();
+  loadTimeline();
+}
+</script>
+
+</body>
+</html>
