@@ -453,6 +453,55 @@ textarea {
   transform: scale(1.05);
 }
 
+.delete-img {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  background: var(--danger);
+  color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.delete-img:hover {
+  transform: scale(1.15);
+  background: #A03030;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* View modal image container */
+.view-image-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.view-image-container img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  display: block;
+}
+
+.view-image-container .delete-img {
+  top: 8px;
+  right: 8px;
+}
+
+
 /* ================= ACTION BUTTONS ================= */
 .actions {
   display: flex;
@@ -690,15 +739,25 @@ const notesInput = document.getElementById('notesInput');
 
 /* ================= AUTHENTICATION ================= */
 function login() {
-  if (password.value === 'hetandshruti') {
+  if (password.value === '1') {
     loginDiv.style.display = 'none';
     app.style.display = 'block';
+    localStorage.setItem('authenticated', 'true');
     loadTimeline();
   } else {
     alert('Wrong password 💔');
     password.value = '';
   }
 }
+
+// Check if already authenticated on page load
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('authenticated') === 'true') {
+    loginDiv.style.display = 'none';
+    app.style.display = 'block';
+    loadTimeline();
+  }
+});
 
 /* ================= FLOATING HEARTS BACKGROUND ================= */
 const heartsContainer = document.getElementById('hearts');
@@ -742,7 +801,7 @@ function formatDate(dateString) {
 /* ================= LOAD TIMELINE ================= */
 function loadTimeline() {
   timeline.innerHTML = '';
-  const dates = getData().sort((a, b) => new Date(b.date) - new Date(a.date));
+  const dates = getData().sort((a, b) => new Date(a.date) - new Date(b.date)); // OLDEST TO NEWEST
   
   if (dates.length === 0) {
     timeline.innerHTML = '<p style="text-align:center;opacity:0.6;padding:40px;">No dates yet. Click "Add New Date" to start! 💕</p>';
@@ -889,9 +948,12 @@ viewModal.addEventListener('click', (e) => {
 });
 
 /* ================= VIEW DATE DETAILS ================= */
+let currentViewIndex = null;
+
 function viewDate(index) {
-  const dates = getData().sort((a, b) => new Date(b.date) - new Date(a.date));
+  const dates = getData().sort((a, b) => new Date(a.date) - new Date(b.date)); // OLDEST TO NEWEST
   const date = dates[index];
+  currentViewIndex = index;
   
   document.getElementById('viewTitle').textContent = date.title || 'A Special Date';
   document.getElementById('viewDate').textContent = formatDate(date.date);
@@ -901,16 +963,25 @@ function viewDate(index) {
   imagesContainer.innerHTML = '';
   
   if (date.images && date.images.length > 0) {
-    date.images.forEach(img => {
+    date.images.forEach((img, imgIndex) => {
+      const container = document.createElement('div');
+      container.className = 'view-image-container';
+      
       const imgEl = document.createElement('img');
       imgEl.src = img.url;
-      imgEl.style.width = '100%';
-      imgEl.style.height = '200px';
-      imgEl.style.objectFit = 'cover';
-      imgEl.style.borderRadius = '12px';
-      imgEl.style.cursor = 'pointer';
       imgEl.onclick = () => window.open(img.url, '_blank');
-      imagesContainer.appendChild(imgEl);
+      
+      const deleteBtn = document.createElement('div');
+      deleteBtn.className = 'delete-img';
+      deleteBtn.innerHTML = '✕';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        deleteImage(index, imgIndex);
+      };
+      
+      container.appendChild(imgEl);
+      container.appendChild(deleteBtn);
+      imagesContainer.appendChild(container);
     });
   } else {
     imagesContainer.innerHTML = '<p style="opacity:0.6;">No photos uploaded.</p>';
@@ -919,8 +990,34 @@ function viewDate(index) {
   viewModal.style.display = 'flex';
 }
 
+function deleteImage(dateIndex, imageIndex) {
+  if (!confirm('Delete this photo? 💔')) return;
+  
+  // Get all dates in the SAME sort order as displayed
+  const allDates = getData();
+  const sortedDates = [...allDates].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  // Find the actual index in the original unsorted array
+  const dateToModify = sortedDates[dateIndex];
+  const actualIndex = allDates.findIndex(d => 
+    d.date === dateToModify.date && 
+    d.title === dateToModify.title
+  );
+  
+  // Remove the image
+  allDates[actualIndex].images.splice(imageIndex, 1);
+  
+  // Save back to storage
+  saveData(allDates);
+  
+  // Refresh view
+  viewDate(dateIndex);
+  loadTimeline();
+}
+
 function closeView() {
   viewModal.style.display = 'none';
+  currentViewIndex = null;
 }
 </script>
 
