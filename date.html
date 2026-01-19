@@ -553,6 +553,25 @@ textarea {
   <div class="timeline" id="timeline"></div>
 </div>
 
+<!-- VIEW DATE MODAL -->
+<div class="modal" id="viewModal">
+  <div class="modal-content" style="max-width: 700px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 id="viewTitle" style="margin: 0;">Date Details</h2>
+      <button onclick="closeView()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text);">✕</button>
+    </div>
+    
+    <p id="viewDate" style="font-size: 16px; color: var(--muted); margin-bottom: 10px;"></p>
+    <p id="viewNotes" style="margin-bottom: 20px; line-height: 1.6;"></p>
+    
+    <div id="viewImages" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;"></div>
+    
+    <div class="actions" style="margin-top: 30px;">
+      <button class="cancel" onclick="closeView()">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADD DATE MODAL -->
 <div class="modal" id="addModal">
   <div class="modal-content">
@@ -640,6 +659,15 @@ const STORAGE_KEY = 'romantic_dates';
 const getData = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 const saveData = data => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
+/* ================= FORMAT DATE TO DD/MM/YYYY ================= */
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 /* ================= LOAD TIMELINE ================= */
 function loadTimeline() {
   timeline.innerHTML = '';
@@ -650,14 +678,13 @@ function loadTimeline() {
     return;
   }
 
-  dates.forEach(d => {
+  dates.forEach((d, index) => {
     const el = document.createElement('div');
     el.className = 'timeline-item';
-    const formattedDate = new Date(d.date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    el.onclick = () => viewDate(index);
+    
+    const formattedDate = formatDate(d.date);
+    
     el.innerHTML = `
       <h3>${d.title || 'A Special Date'}</h3>
       <small>${formattedDate}</small>
