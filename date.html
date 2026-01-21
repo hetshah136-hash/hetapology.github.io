@@ -1,200 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Memories</title>
-<link rel="stylesheet" href="date.css">
+  <meta charset="UTF-8" />
+  <title>Our Memories</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="date.css" />
 </head>
+
 <body>
 
-<div class="container">
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <h1>Our Memories</h1>
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Enter</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" hidden>
+
   <header>
-    <div class="header-content">
-      <h1>Our Memories</h1>
-      <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">☾</button>
-        <button class="btn btn-primary" id="newDateBtn">+ New Date</button>
-      </div>
+    <h1>Our Memories</h1>
+    <div class="header-actions">
+      <button id="themeToggle">☾</button>
+      <button id="newDateBtn">New Date</button>
     </div>
   </header>
 
-  <section class="counter-section">
-    <div class="counter-card">
-      <div class="counter-number" id="daysCounter">0</div>
-      <div class="counter-label">Days Together</div>
-    </div>
+  <!-- Relationship Counter -->
+  <section class="counter">
+    <div class="counter-number" id="daysCounter">0</div>
+    <div class="counter-label">Days Together</div>
   </section>
 
-  <section class="stats-grid">
-    <div class="stat-card" id="statAllDates">
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat">
       <div class="stat-number" id="totalDates">0</div>
-      <div class="stat-label">Total Dates</div>
+      <div class="stat-label">Dates</div>
     </div>
-    <div class="stat-card">
+    <div class="stat">
       <div class="stat-number" id="totalPhotos">0</div>
-      <div class="stat-label">Total Photos</div>
+      <div class="stat-label">Photos</div>
     </div>
-    <div class="stat-card" id="statYearDates">
-      <div class="stat-number" id="yearDates">0</div>
+    <div class="stat">
+      <div class="stat-number" id="thisYear">0</div>
       <div class="stat-label">This Year</div>
     </div>
   </section>
 
-  <section class="actions-bar">
-    <button class="btn btn-secondary" id="randomBtn">Random</button>
-    <button class="btn btn-secondary" id="exportBtn">Export</button>
-    <button class="btn btn-secondary" id="importBtn">Import</button>
-  </section>
+  <!-- Timeline -->
+  <main id="timeline"></main>
 
-  <section class="search-filter-section">
-    <div class="search-wrapper">
-      <input type="text" class="search-input" id="searchInput" placeholder="Search dates..." autocomplete="off">
-      <span class="search-icon">⌘K</span>
-    </div>
-    <div class="filter-chips">
-      <button class="chip active" data-filter="all">All</button>
-      <button class="chip" data-filter="favorite">Favorites</button>
-      <button class="chip" data-filter="romance">Romance</button>
-      <button class="chip" data-filter="adventure">Adventure</button>
-      <button class="chip" data-filter="fun">Fun</button>
-      <button class="chip" data-filter="cozy">Cozy</button>
-    </div>
-  </section>
-
-  <section class="timeline" id="timeline"></section>
 </div>
 
+<!-- ADD MODAL -->
 <div class="modal" id="addModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="modal-title">New Date</h2>
-      <button class="close-btn" data-modal="addModal">×</button>
-    </div>
-    <form id="addForm">
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input type="date" class="form-input" id="dateInput" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title</label>
-        <input type="text" class="form-input" id="titleInput" placeholder="Our amazing date" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Category</label>
-        <select class="form-select" id="categoryInput">
-          <option value="">None</option>
-          <option value="romance">Romance</option>
-          <option value="adventure">Adventure</option>
-          <option value="fun">Fun</option>
-          <option value="cozy">Cozy</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" id="notesInput" placeholder="What made this special..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Photos</label>
-        <input type="file" id="photoInput" accept="image/*" multiple style="display:none">
-        <button type="button" class="btn btn-secondary" style="width:100%" id="choosePhotosBtn">Choose Photos</button>
-        <div class="upload-preview" id="photoPreview"></div>
-      </div>
-      <div class="modal-actions">
-        <button type="submit" class="btn btn-primary" id="saveBtn" style="flex:1">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
+  <form class="modal-card" id="addForm">
+    <h2>Add Date</h2>
 
-<div class="modal view-modal" id="viewModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="modal-title" id="viewTitle"></h2>
-      <button class="close-btn" data-modal="viewModal">×</button>
-    </div>
-    <div class="view-header">
-      <div class="view-meta">
-        <span class="view-date" id="viewDate"></span>
-        <span class="view-category" id="viewCategory"></span>
-      </div>
-    </div>
-    <div class="view-notes" id="viewNotes"></div>
-    <div class="view-photos" id="viewPhotosSection">
-      <h3 class="view-photos-title">Photos</h3>
-      <div class="view-photo-grid" id="viewPhotoGrid"></div>
-    </div>
+    <label>Date</label>
+    <input type="date" id="dateInput" required />
+
+    <label>Title</label>
+    <input type="text" id="titleInput" />
+
+    <label>Notes</label>
+    <textarea id="notesInput"></textarea>
+
+    <label>Photos</label>
+    <input type="file" id="imageInput" multiple accept="image/*" />
+
     <div class="modal-actions">
-      <button class="btn btn-secondary" id="favoriteBtn">☆ Star</button>
-      <button class="btn btn-secondary" id="slideshowBtn">Slideshow</button>
-      <button class="btn btn-secondary" id="editBtn">Edit</button>
-      <button class="btn btn-secondary" id="addPhotosBtn">Add Photos</button>
-      <button class="btn btn-secondary" id="deleteBtn" style="color:#ff4444">Delete</button>
+      <button type="button" class="secondary" onclick="closeAdd()">Cancel</button>
+      <button type="submit">Save</button>
     </div>
-  </div>
+  </form>
 </div>
 
-<div class="modal" id="editModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="modal-title">Edit Date</h2>
-      <button class="close-btn" data-modal="editModal">×</button>
-    </div>
-    <form id="editForm">
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input type="date" class="form-input" id="editDateInput" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title</label>
-        <input type="text" class="form-input" id="editTitleInput" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Category</label>
-        <select class="form-select" id="editCategoryInput">
-          <option value="">None</option>
-          <option value="romance">Romance</option>
-          <option value="adventure">Adventure</option>
-          <option value="fun">Fun</option>
-          <option value="cozy">Cozy</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" id="editNotesInput"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Current Photos</label>
-        <div class="upload-preview" id="editPhotoPreview"></div>
-      </div>
-      <div class="modal-actions">
-        <button type="submit" class="btn btn-primary" style="flex:1">Save Changes</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" id="lightboxClose">×</button>
-  <button class="lightbox-nav lightbox-prev" id="lightboxPrev">←</button>
-  <div class="lightbox-content">
-    <img class="lightbox-img" id="lightboxImg" src="" alt="Photo">
-  </div>
-  <button class="lightbox-nav lightbox-next" id="lightboxNext">→</button>
-  <div class="lightbox-counter" id="lightboxCounter"></div>
-</div>
-
-<div class="loading" id="loading">
-  <div class="loading-content">
-    <div class="spinner"></div>
-    <p class="loading-text" id="loadingText">Uploading...</p>
-  </div>
-</div>
-
-<input type="file" id="importInput" accept=".json" style="display:none">
-
-<script src="https://upload-widget.cloudinary.com/global/all.js"></script>
-<script src="date.js" defer></script>
-
+<script src="date.js"></script>
 </body>
 </html>
