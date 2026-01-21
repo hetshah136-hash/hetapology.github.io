@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💝 Date Gallery</title>
+
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --card: #FFFFFF;
+      --text: #1A1A1A;
+      --text-muted: #6B6B6B;
+      --border: #E5E5E5;
+      --accent: #FFB5C5;
+      --accent-hover: #FFA0B8;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --radius: 6px;
+      --transition: 200ms ease;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0A0A0A;
+      --card: #1A1A1A;
+      --text: #FAFAFA;
+      --text-muted: #A0A0A0;
+      --border: #2A2A2A;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Verdana, Geneva, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 24px;
+      }
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+      margin-bottom: 48px;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      height: 44px;
+      padding: 0 32px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition);
+      font-family: Verdana, Geneva, sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .counter-section {
+      margin-bottom: 64px;
+    }
+
+    .counter-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 48px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+
+    .counter-number {
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .counter-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-number {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+
+    .search-filter-section {
+      margin-bottom: 48px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 12px 48px 12px 20px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      font-size: 16px;
+      font-family: Verdana, Geneva, sans-serif;
+      background: var(--card);
+      color: var(--text);
+      transition: all var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 181, 197, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 13px;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .chip {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: Verdana, Geneva, sans-serif;
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+    }
+
+    .chip.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .date-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+
+    .date-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .date-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .date-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .date-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .date-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .favorite-icon {
+      color: gold;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .date-date {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .date-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tag-romance { background: #FFE0E8; color: #D63384; }
+    .tag-adventure { background: #E0F4FF; color: #0D6EFD; }
+    .tag-fun { background: #FFF3CD; color: #FFC107; }
+    .tag-cozy { background: #E8E8E8; color: #6C757D; }
+
+    [data-theme="dark"] .tag-romance { background: #4D1F30; color: #FFB5C5; }
+    [data-theme="dark"] .tag-adventure { background: #1F3D4D; color: #7CB8E8; }
+    [data-theme="dark"] .tag-fun { background: #4D4220; color: #FFD966; }
+    [data-theme="dark"] .tag-cozy { background: #2D2D2D; color: #A0A0A0; }
+
+    .date-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .date-notes {
+      color: var(--text);
+      margin: 16px 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .photo-item {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .photo-item:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-count {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeIn 200ms ease;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 48px;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: scaleIn 200ms ease;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.98); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .view-modal .modal-content {
+      max-width: 800px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+      transition: color var(--transition);
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-family: Verdana, Geneva, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: all var(--transition);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 181, 197, 0.1);
+    }
+
+    .form-input {
+      height: 48px;
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .upload-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-item.pending {
+      border: 2px dashed var(--accent);
+    }
+
+    .preview-item .pending-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      text-align: center;
+      padding: 2px;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .remove-btn:hover {
+      background: rgba(220, 53, 69, 0.9);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .view-header {
+      margin-bottom: 24px;
+    }
+
+    .view-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .view-date,
+    .view-category {
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .view-notes {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 24px 0;
+      color: var(--text);
+    }
+
+    .view-photos {
+      margin-top: 32px;
+    }
+
+    .view-photos-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .view-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 4px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .lightbox-nav:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .lightbox-prev { left: 24px; }
+    .lightbox-next { right: 24px; }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #A0A0A0;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: #A0A0A0;
+      letter-spacing: 0.5px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 96px 24px;
+    }
+
+    .empty-text {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 24px; }
+      .counter-number { font-size: 48px; }
+      .stat-number { font-size: 36px; }
+      .modal-content { padding: 32px 24px; }
+      .btn { padding: 0 24px; font-size: 14px; }
+      .date-title { font-size: 18px; }
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="header-content">
+        <h1>💝 Date Gallery</h1>
+        <div class="header-actions">
+          <button class="icon-btn" id="themeToggle" title="Toggle theme">🌙</button>
+          <button class="btn btn-primary" id="newDateBtn">New Date</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Counter Section -->
+    <section class="counter-section">
+      <div class="counter-card">
+        <div class="counter-number" id="daysCounter">0</div>
+        <div class="counter-label">Days Together</div>
+      </div>
+    </section>
+
+    <!-- Stats Grid -->
+    <section class="stats-grid">
+      <div class="stat-card" onclick="handleFilter('all')">
+        <div class="stat-number" id="totalDates">0</div>
+        <div class="stat-label">Total Dates</div>
+      </div>
+      <div class="stat-card" onclick="handleFilter('all')">
+        <div class="stat-number" id="totalPhotos">0</div>
+        <div class="stat-label">Total Photos</div>
+      </div>
+      <div class="stat-card" onclick="handleFilter('all')">
+        <div class="stat-number" id="thisYear">0</div>
+        <div class="stat-label">This Year</div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="actions-bar">
+      <button class="btn btn-secondary" id="randomBtn">Random</button>
+      <button class="btn btn-secondary" id="exportBtn">Export</button>
+      <button class="btn btn-secondary" id="importBtn">Import</button>
+      <button class="btn btn-secondary" onclick="auditStorageImages()">Audit Storage</button>
+      <input type="file" id="importFile" accept=".json" style="display: none;">
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="search-filter-section">
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search dates...">
+        <span class="search-icon">⌘K</span>
+      </div>
+      <div class="filter-chips">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="favorites">Favorites</button>
+        <button class="chip" data-filter="romance">Romance</button>
+        <button class="chip" data-filter="adventure">Adventure</button>
+        <button class="chip" data-filter="fun">Fun</button>
+        <button class="chip" data-filter="cozy">Cozy</button>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="timeline" id="timeline">
+      <!-- Date cards will be inserted here -->
+    </section>
+  </div>
+
+  <!-- New Date Modal -->
+  <div class="modal" id="newDateModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">New Date</h2>
+        <button class="close-btn" onclick="closeModal('newDateModal')">×</button>
+      </div>
+      <form id="dateForm">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="dateInput" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" id="titleInput" class="form-input" placeholder="Enter date title" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="categoryInput" class="form-select">
+            <option value="none">None</option>
+            <option value="romance">Romance</option>
+            <option value="adventure">Adventure</option>
+            <option value="fun">Fun</option>
+            <option value="cozy">Cozy</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea id="notesInput" class="form-textarea" placeholder="Add some notes about this date..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Photos</label>
+          <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('photoInput').click()">Choose Photos</button>
+          <div id="uploadPreview" class="upload-preview"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('newDateModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Date Modal -->
+  <div class="modal view-modal" id="viewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">📅</h2>
+        <button class="close-btn" onclick="closeModal('viewModal')">×</button>
+      </div>
+      <div id="viewModalContent"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="startSlideshow()">☆ Slideshow</button>
+        <button class="btn btn-secondary" onclick="openEditModal(appState.currentViewIndex); closeModal('viewModal')">Edit</button>
+        <button class="btn btn-secondary" onclick="addPhotosFromViewModal()">Add Photos</button>
+        <button class="btn btn-secondary" onclick="deleteDate(appState.currentViewIndex); closeModal('viewModal')">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Date Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Date</h2>
+        <button class="close-btn" onclick="closeModal('editModal')">×</button>
+      </div>
+      <form id="editForm">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="editDateInput" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" id="editTitleInput" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="editCategoryInput" class="form-select">
+            <option value="none">None</option>
+            <option value="romance">Romance</option>
+            <option value="adventure">Adventure</option>
+            <option value="fun">Fun</option>
+            <option value="cozy">Cozy</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea id="editNotesInput" class="form-textarea"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Photos</label>
+          <input type="file" id="editPhotoInput" accept="image/*" multiple style="display: none;">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('editPhotoInput').click()">Add More Photos</button>
+          <div id="editUploadPreview" class="upload-preview"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+      <img id="lightboxImg" class="lightbox-img" src="" alt="Photo">
+      <button class="lightbox-close" onclick="closeLightbox()">×</button>
+      <button class="lightbox-nav lightbox-prev" onclick="prevPhoto()">‹</button>
+      <button class="lightbox-nav lightbox-next" onclick="nextPhoto()">›</button>
+      <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading" id="loading">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <div class="loading-text">Uploading...</div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- JavaScript -->
+  <script>
+    // State management
+    const appState = {
+      dates: [],
+      currentViewIndex: -1,
+      currentFilter: 'all',
+      searchTerm: '',
+      pendingPhotos: [],          // For new date creation
+      editPendingPhotos: [],      // FIX: Separate state for edit modal pending uploads
+      editExistingPhotos: [],     // FIX: Track existing photos during edit (for deletion)
+      currentLightboxPhotos: [],
+      currentLightboxIndex: -1,
+      slideshowInterval: null,
+      SUPABASE: {
+        URL: 'https://mgtioecbvcgqqpmbengw.supabase.co',
+        ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ndGlvZWNidmNncXFwbWJlbmd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDkyMjcsImV4cCI6MjA4NDU4NTIyN30.L3jfdNg_26JrRd26SvcXRnGwpmSTjALkSY7f2z0Mm_c',
+        BUCKET_NAME: 'date-photos'
+      },
+      RELATIONSHIP_START: new Date('2026-01-01'),
+      PASSWORD: '1'
+    };
+
+    let searchDebounce = null;
+    const supabase = window.supabase.createClient(appState.SUPABASE.URL, appState.SUPABASE.ANON_KEY);
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', () => {
+      checkPassword();
+      loadDates();
+      loadTheme();
+      setupEventListeners();
+      updateCounter();
+      renderTimeline();
+      updateStats();
+      setInterval(updateCounter, 1000);
+      document.getElementById('dateInput').valueAsDate = new Date();
+    });
+
+    // Password protection
+    function checkPassword() {
+      const saved = localStorage.getItem('dateGalleryAuth');
+      if (saved !== appState.PASSWORD) {
+        const input = prompt('Enter password to access:');
+        if (input === appState.PASSWORD) {
+          localStorage.setItem('dateGalleryAuth', appState.PASSWORD);
+        } else {
+          alert('Incorrect password');
+          document.body.innerHTML = '<div style="text-align:center;padding:100px;font-family:Verdana;">Access Denied</div>';
+        }
+      }
+    }
+
+    // Theme management
+    function loadTheme() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Event listeners
+    function setupEventListeners() {
+      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      document.getElementById('newDateBtn').addEventListener('click', openNewDateModal);
+      document.getElementById('randomBtn').addEventListener('click', showRandomDate);
+      document.getElementById('exportBtn').addEventListener('click', exportData);
+      document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+      document.getElementById('importFile').addEventListener('change', importData);
+      document.getElementById('searchInput').addEventListener('input', handleSearch);
+      document.getElementById('photoInput').addEventListener('change', handlePhotoSelect);
+      document.getElementById('editPhotoInput').addEventListener('change', handleEditPhotoSelect);
+      document.getElementById('dateForm').addEventListener('submit', handleDateSubmit);
+      document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
+      document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+        chip.addEventListener('click', () => handleFilter(chip.dataset.filter));
+      });
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal(modal.id);
+        });
+      });
+      document.getElementById('lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox') closeLightbox();
+      });
+      document.addEventListener('keydown', handleKeyPress);
+    }
+
+    // Image optimization
+    async function optimizeImage(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const MAX_WIDTH = 1920;
+            const MAX_HEIGHT = 1920;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              resolve(new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              }));
+            }, 'image/jpeg', 0.85);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Upload photos to Supabase
+    async function uploadPhotosToSupabase(files) {
+      showLoading();
+      const uploadedUrls = [];
+      for (const file of files) {
+        try {
+          const optimizedFile = await optimizeImage(file);
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const filePath = `dates/${fileName}`;
+          const { data, error } = await supabase.storage
+            .from(appState.SUPABASE.BUCKET_NAME)
+            .upload(filePath, optimizedFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
+          if (error) throw error;
+          const { data: { publicUrl } } = supabase.storage
+            .from(appState.SUPABASE.BUCKET_NAME)
+            .getPublicUrl(filePath);
+          uploadedUrls.push(publicUrl);
+        } catch (error) {
+          console.error('Upload failed:', error);
+          alert(`Failed to upload ${file.name}: ${error.message}`);
+        }
+      }
+      hideLoading();
+      return uploadedUrls;
+    }
+
+    // Get optimized image URL
+    function getOptimizedImageUrl(publicUrl, width = 400, quality = 80) {
+      try {
+        const url = new URL(publicUrl);
+        url.pathname = url.pathname.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/');
+        url.searchParams.set('width', width);
+        url.searchParams.set('quality', quality);
+        return url.toString();
+      } catch (e) {
+        return publicUrl;
+      }
+    }
+
+    // Audit storage
+    async function auditStorageImages() {
+      try {
+        const { data, error } = await supabase.storage
+          .from(appState.SUPABASE.BUCKET_NAME)
+          .list('dates', {
+            limit: 100,
+            offset: 0,
+            sortBy: { column: 'created_at', order: 'desc' }
+          });
+        if (error) throw error;
+        console.log('=== Storage Audit ===');
+        console.log('Total images:', data.length);
+        let totalSize = 0;
+        data.forEach(file => {
+          const sizeKB = (file.metadata.size / 1024).toFixed(2);
+          totalSize += file.metadata.size;
+          console.log(`${file.name} - Size: ${sizeKB}KB - Created: ${file.created_at}`);
+        });
+        console.log(`Total storage used: ${(totalSize / 1024 / 1024).toFixed(2)}MB`);
+        console.log('===================');
+        alert(`Storage Audit Complete! Check console (F12) for details.\nTotal: ${data.length} images, ${(totalSize / 1024 / 1024).toFixed(2)}MB used.`);
+        return data;
+      } catch (error) {
+        console.error('Audit failed:', error);
+        alert('Audit failed: ' + error.message);
+      }
+    }
+
+    // Handle photo selection for NEW date
+    function handlePhotoSelect(e) {
+      const files = Array.from(e.target.files);
+      appState.pendingPhotos = [...appState.pendingPhotos, ...files];
+      displayNewDatePhotoPreview();
+      e.target.value = ''; // FIX: Reset file input to allow re-selection
+    }
+
+    // FIX: Handle photo selection for EDIT - stores files, doesn't upload yet
+    function handleEditPhotoSelect(e) {
+      const files = Array.from(e.target.files);
+      appState.editPendingPhotos = [...appState.editPendingPhotos, ...files];
+      displayEditPhotoPreview();
+      e.target.value = ''; // FIX: Reset file input to allow re-selection
+    }
+
+    // FIX: Display preview for new date modal
+    function displayNewDatePhotoPreview() {
+      const container = document.getElementById('uploadPreview');
+      container.innerHTML = '';
+
+      appState.pendingPhotos.forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'preview-item pending';
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.type = 'button';
+        removeBtn.onclick = () => {
+          appState.pendingPhotos.splice(index, 1);
+          displayNewDatePhotoPreview();
+        };
+
+        div.appendChild(img);
+        div.appendChild(removeBtn);
+        container.appendChild(div);
+      });
+    }
+
+    // FIX: Display preview for edit modal - shows existing + pending
+    function displayEditPhotoPreview() {
+      const container = document.getElementById('editUploadPreview');
+      container.innerHTML = '';
+
+      // Show existing photos (already uploaded)
+      appState.editExistingPhotos.forEach((url, index) => {
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+
+        const img = document.createElement('img');
+        img.src = getOptimizedImageUrl(url, 200, 70);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.type = 'button';
+        removeBtn.onclick = () => {
+          appState.editExistingPhotos.splice(index, 1);
+          displayEditPhotoPreview();
+        };
+
+        div.appendChild(img);
+        div.appendChild(removeBtn);
+        container.appendChild(div);
+      });
+
+      // Show pending photos (not yet uploaded)
+      appState.editPendingPhotos.forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'preview-item pending';
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+
+        const label = document.createElement('span');
+        label.className = 'pending-label';
+        label.textContent = 'New';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.type = 'button';
+        removeBtn.onclick = () => {
+          appState.editPendingPhotos.splice(index, 1);
+          displayEditPhotoPreview();
+        };
+
+        div.appendChild(img);
+        div.appendChild(label);
+        div.appendChild(removeBtn);
+        container.appendChild(div);
+      });
+    }
+
+    // FIX: Add Photos button from View Modal - opens edit modal
+    function addPhotosFromViewModal() {
+      const index = appState.currentViewIndex;
+      closeModal('viewModal');
+      openEditModal(index);
+      // Trigger file picker after modal opens
+      setTimeout(() => {
+        document.getElementById('editPhotoInput').click();
+      }, 300);
+    }
+
+    // Handle new date form submission
+    async function handleDateSubmit(e) {
+      e.preventDefault();
+      const dateInput = document.getElementById('dateInput').value;
+      const title = document.getElementById('titleInput').value.trim();
+      const category = document.getElementById('categoryInput').value;
+      const notes = document.getElementById('notesInput').value.trim();
+      if (!title) {
+        alert('Please enter a title');
+        return;
+      }
+      let photoUrls = [];
+      if (appState.pendingPhotos.length > 0) {
+        photoUrls = await uploadPhotosToSupabase(appState.pendingPhotos);
+      }
+      const newDate = {
+        id: Date.now().toString(),
+        date: dateInput,
+        title,
+        category,
+        notes,
+        photos: photoUrls,
+        favorite: false,
+        createdAt: new Date().toISOString()
+      };
+      appState.dates.push(newDate);
+      saveDates();
+      closeModal('newDateModal');
+      resetNewDateForm();
+      renderTimeline();
+      updateStats();
+    }
+
+    // FIX: Handle edit form submission - properly uploads new photos
+    async function handleEditSubmit(e) {
+      e.preventDefault();
+      const index = appState.currentViewIndex;
+      const dateObj = appState.dates[index];
+
+      // Update basic fields
+      dateObj.date = document.getElementById('editDateInput').value;
+      dateObj.title = document.getElementById('editTitleInput').value.trim();
+      dateObj.category = document.getElementById('editCategoryInput').value;
+      dateObj.notes = document.getElementById('editNotesInput').value.trim();
+
+      // Upload new pending photos to Supabase
+      let newPhotoUrls = [];
+      if (appState.editPendingPhotos.length > 0) {
+        newPhotoUrls = await uploadPhotosToSupabase(appState.editPendingPhotos);
+      }
+
+      // Combine existing (possibly reduced) photos with newly uploaded
+      dateObj.photos = [...appState.editExistingPhotos, ...newPhotoUrls];
+
+      saveDates();
+      closeModal('editModal');
+      resetEditState();
+      renderTimeline();
+      updateStats();
+    }
+
+    // FIX: Reset new date form and state
+    function resetNewDateForm() {
+      document.getElementById('dateForm').reset();
+      document.getElementById('dateInput').valueAsDate = new Date();
+      document.getElementById('uploadPreview').innerHTML = '';
+      document.getElementById('photoInput').value = '';
+      appState.pendingPhotos = [];
+    }
+
+    // FIX: Reset edit state
+    function resetEditState() {
+      document.getElementById('editForm').reset();
+      document.getElementById('editUploadPreview').innerHTML = '';
+      document.getElementById('editPhotoInput').value = '';
+      appState.editPendingPhotos = [];
+      appState.editExistingPhotos = [];
+    }
+
+    // Counter
+    function updateCounter() {
+      const now = new Date();
+      const diff = now - appState.RELATIONSHIP_START;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById('daysCounter').textContent = days;
+    }
+
+    // Statistics
+    function updateStats() {
+      const totalDates = appState.dates.length;
+      const totalPhotos = appState.dates.reduce((sum, date) => sum + date.photos.length, 0);
+      const thisYear = appState.dates.filter(d => new Date(d.date).getFullYear() === new Date().getFullYear()).length;
+      document.getElementById('totalDates').textContent = totalDates;
+      document.getElementById('totalPhotos').textContent = totalPhotos;
+      document.getElementById('thisYear').textContent = thisYear;
+    }
+
+    // Filter
+    function handleFilter(filter) {
+      appState.currentFilter = filter;
+      document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.filter === filter);
+      });
+      renderTimeline();
+    }
+
+    // Search
+    function handleSearch(e) {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        appState.searchTerm = e.target.value.toLowerCase();
+        renderTimeline();
+      }, 300);
+    }
+
+    // Render timeline
+    function renderTimeline() {
+      const timeline = document.getElementById('timeline');
+      let filtered = appState.dates;
+      if (appState.currentFilter !== 'all') {
+        if (appState.currentFilter === 'favorites') {
+          filtered = filtered.filter(d => d.favorite);
+        } else {
+          filtered = filtered.filter(d => d.category === appState.currentFilter);
+        }
+      }
+      if (appState.searchTerm) {
+        filtered = filtered.filter(d => 
+          d.title.toLowerCase().includes(appState.searchTerm) ||
+          d.notes.toLowerCase().includes(appState.searchTerm)
+        );
+      }
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      if (filtered.length === 0) {
+        timeline.innerHTML = '<div class="empty-state"><p class="empty-text">No dates found</p></div>';
+        return;
+      }
+      timeline.innerHTML = filtered.map((dateObj, index) => {
+        const realIndex = appState.dates.indexOf(dateObj);
+        const formattedDate = new Date(dateObj.date).toLocaleDateString('en-US', { 
+          month: 'short', day: 'numeric', year: 'numeric' 
+        });
+        const photosHTML = dateObj.photos.length > 0 ? `
+          <div class="photo-grid">
+            ${dateObj.photos.slice(0, 6).map((photo, pIndex) => `
+              <div class="photo-item" onclick="openLightbox(${realIndex}, ${pIndex})">
+                <img src="${getOptimizedImageUrl(photo, 300, 75)}" alt="Date photo" loading="lazy">
+              </div>
+            `).join('')}
+          </div>
+        ` : '';
+        const photoCount = dateObj.photos.length;
+        return `
+          <div class="date-card">
+            <div class="date-header">
+              <div class="date-info">
+                <div class="date-title-row">
+                  <h3 class="date-title">${escapeHtml(dateObj.title)}</h3>
+                  ${dateObj.favorite ? '<span class="favorite-icon">★</span>' : ''}
+                </div>
+                <div class="date-date">${formattedDate}</div>
+                ${dateObj.category !== 'none' ? `<span class="date-tag tag-${dateObj.category}">${dateObj.category}</span>` : ''}
+              </div>
+              <div class="date-actions">
+                <button class="action-btn" onclick="toggleFavorite(${realIndex})" title="Favorite">
+                  ${dateObj.favorite ? '★' : '☆'}
+                </button>
+                <button class="action-btn" onclick="viewDate(${realIndex})" title="View">👁</button>
+                <button class="action-btn" onclick="openEditModal(${realIndex})" title="Edit">✎</button>
+                <button class="action-btn" onclick="deleteDate(${realIndex})" title="Delete">🗑</button>
+              </div>
+            </div>
+            ${dateObj.notes ? `<p class="date-notes">${escapeHtml(truncateText(dateObj.notes, 200))}</p>` : ''}
+            ${photosHTML}
+            ${photoCount > 0 ? `<p class="photo-count">${photoCount} photo${photoCount > 1 ? 's' : ''}</p>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Modals
+    function openNewDateModal() {
+      resetNewDateForm();
+      document.getElementById('newDateModal').classList.add('active');
+    }
+
+    // FIX: Open edit modal - initialize edit state properly
+    function openEditModal(index) {
+      appState.currentViewIndex = index;
+      const dateObj = appState.dates[index];
+
+      // Reset edit state first
+      appState.editPendingPhotos = [];
+      appState.editExistingPhotos = [...dateObj.photos]; // Copy existing photos
+
+      // Populate form fields
+      document.getElementById('editDateInput').value = dateObj.date;
+      document.getElementById('editTitleInput').value = dateObj.title;
+      document.getElementById('editCategoryInput').value = dateObj.category;
+      document.getElementById('editNotesInput').value = dateObj.notes;
+      document.getElementById('editPhotoInput').value = '';
+
+      // Display current photos
+      displayEditPhotoPreview();
+
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function viewDate(index) {
+      appState.currentViewIndex = index;
+      const dateObj = appState.dates[index];
+      const formattedDate = new Date(dateObj.date).toLocaleDateString('en-US', { 
+        month: 'long', day: 'numeric', year: 'numeric' 
+      });
+      const photosHTML = dateObj.photos.length > 0 ? `
+        <div class="view-photos">
+          <h4 class="view-photos-title">Photos (${dateObj.photos.length})</h4>
+          <div class="view-photo-grid">
+            ${dateObj.photos.map((photo, i) => `
+              <div class="photo-item" onclick="openLightbox(${index}, ${i})">
+                <img src="${getOptimizedImageUrl(photo, 300, 75)}" alt="Date photo" loading="lazy">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+      document.getElementById('viewModalContent').innerHTML = `
+        <div class="view-header">
+          <h2>${escapeHtml(dateObj.title)} ${dateObj.favorite ? '<span class="favorite-icon">★</span>' : ''}</h2>
+          <div class="view-meta">
+            <span class="view-date">${formattedDate}</span>
+            ${dateObj.category !== 'none' ? `<span class="date-tag tag-${dateObj.category}">${dateObj.category}</span>` : ''}
+          </div>
+        </div>
+        ${dateObj.notes ? `<p class="view-notes">${escapeHtml(dateObj.notes)}</p>` : ''}
+        ${photosHTML}
+      `;
+      document.getElementById('viewModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      // Reset state when closing edit modal
+      if (modalId === 'editModal') {
+        resetEditState();
+      }
+      if (modalId === 'newDateModal') {
+        resetNewDateForm();
+      }
+    }
+
+    // Lightbox
+    function openLightbox(dateIndex, photoIndex) {
+      appState.currentViewIndex = dateIndex;
+      appState.currentLightboxPhotos = appState.dates[dateIndex].photos;
+      appState.currentLightboxIndex = photoIndex;
+      updateLightbox();
+      document.getElementById('lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      stopSlideshow();
+    }
+
+    function updateLightbox() {
+      const photo = appState.currentLightboxPhotos[appState.currentLightboxIndex];
+      document.getElementById('lightboxImg').src = photo;
+      document.getElementById('lightboxCounter').textContent = 
+        `${appState.currentLightboxIndex + 1} / ${appState.currentLightboxPhotos.length}`;
+    }
+
+    function nextPhoto() {
+      appState.currentLightboxIndex = (appState.currentLightboxIndex + 1) % appState.currentLightboxPhotos.length;
+      updateLightbox();
+    }
+
+    function prevPhoto() {
+      appState.currentLightboxIndex = (appState.currentLightboxIndex - 1 + appState.currentLightboxPhotos.length) % appState.currentLightboxPhotos.length;
+      updateLightbox();
+    }
+
+    function startSlideshow() {
+      if (appState.slideshowInterval) return;
+      appState.slideshowInterval = setInterval(nextPhoto, 3000);
+    }
+
+    function stopSlideshow() {
+      if (appState.slideshowInterval) {
+        clearInterval(appState.slideshowInterval);
+        appState.slideshowInterval = null;
+      }
+    }
+
+    // Utilities
+    function toggleFavorite(index) {
+      appState.dates[index].favorite = !appState.dates[index].favorite;
+      saveDates();
+      renderTimeline();
+    }
+
+    function deleteDate(index) {
+      if (confirm('Are you sure you want to delete this date?')) {
+        appState.dates.splice(index, 1);
+        saveDates();
+        renderTimeline();
+        updateStats();
+      }
+    }
+
+    function showRandomDate() {
+      if (appState.dates.length === 0) {
+        alert('No dates available');
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * appState.dates.length);
+      viewDate(randomIndex);
+    }
+
+    function exportData() {
+      const data = JSON.stringify(appState.dates, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `date-gallery-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (confirm(`Import ${imported.length} dates? This will replace current data.`)) {
+            appState.dates = imported;
+            saveDates();
+            renderTimeline();
+            updateStats();
+            alert('Import successful!');
+          }
+        } catch (error) {
+          alert('Invalid file format');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Escape') {
+        if (document.getElementById('lightbox').classList.contains('active')) {
+          closeLightbox();
+        } else {
+          document.querySelectorAll('.modal.active').forEach(modal => {
+            closeModal(modal.id);
+          });
+        }
+      }
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'ArrowRight') nextPhoto();
+        if (e.key === 'ArrowLeft') prevPhoto();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+      }
+    }
+
+    // Data persistence
+    function saveDates() {
+      localStorage.setItem('dateGalleryDates', JSON.stringify(appState.dates));
+    }
+
+    function loadDates() {
+      const saved = localStorage.getItem('dateGalleryDates');
+      if (saved) {
+        appState.dates = JSON.parse(saved);
+      }
+    }
+
+    // Helpers
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function truncateText(text, maxLength) {
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    }
+
+    function showLoading() {
+      document.getElementById('loading').classList.add('active');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
